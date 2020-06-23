@@ -1,0 +1,12 @@
+CC=g++
+CFLAGS=-g -O2 -Wall -std=c++11 -c
+OPENCV = `pkg-config opencv4 --cflags --libs`
+LIBS = $(OPENCV)
+
+objects = capturev4l2.o 
+
+cap: $(objects)
+	$(CC) -o cap $(objects) $(LIBS)
+
+capturev4ls.o: capturev4l2.c
+	$(CC) $(CFLAGS) $(LIBS) capturev4l2.c

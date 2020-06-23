@@ -5,7 +5,7 @@
  *      Author: ducan
  */
 #include "Coffee_bean.h"
-#include <stdio.h>
+//#include <stdio.h>
 //#include <time.h>
 #include "opencv2/opencv.hpp"
 
@@ -33,18 +33,15 @@ dbfl   	b[ROW][COL];
 
 int   check=1;
 
-
-
 //===============================================
 
 int main(int argc, char *argv[])
 {
-//
-	std::cout << "OpenCV version : " << CV_VERSION << std::endl;
-        std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
-        std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
-        std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
 
+	std::cout << "OpenCV version : " << CV_VERSION << std::endl;
+	std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
+	std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
+	std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
 
 	printf("camera starts opening \n");
 
@@ -65,47 +62,31 @@ int main(int argc, char *argv[])
 	cv::Vec3b *pLab;
 //	uint8 B[ROW_CAM][COL_CAM],G[ROW_CAM][COL_CAM],R[ROW_CAM][COL_CAM];
 	uint8 B[ROW][COL],G[ROW][COL],R[ROW][COL];
-/*
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	const char* gst = "v4l2src  ! video/x-raw(memory:NVMM), format=(string)NV12, width=(int)640, height=(int)480, framerate=(fraction)120/1 ! \
+/*	const char* gst = "nvarguscamerasrc  ! video/x-raw(memory:NVMM), format=(string)NV12, width=(int)320, height=(int)240, framerate=(fraction)30/1 ! \
 			nvvidconv         ! video/x-raw,              format=(string)BGRx ! \
 			videoconvert      ! video/x-raw,              format=(string)BGR  ! \
 			appsink";
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 */
+
 	printf("camera is about to open \n");
+	cv::VideoCapture cap;  	// initialize for camera	
 
-//	lsmod
-//	rmmod uvctideo
-//	modprobe uvcvideo nodrop=1 
-//	timeout=5000
 
-	cv::VideoCapture cap;  			// initialize for camera	
-	cap.open(1 + cv::CAP_V4L2);
+//	cap.set(cv::CAP_PROP_FPS,30);
+//	cv::VideoCapture cap;
+	cap.open(0,cv::CAP_V4L2);
 	cap.set(cv::CAP_PROP_FOURCC,cv::VideoWriter::fourcc('M','J','P','G'));
 
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, COL_CAM);	// set the resolution for camera. In this case, Column = 640
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT,ROW_CAM); 	// Row = 480
-
-/*	cv::VideoCapture cap;
-	cap.open(1+cv::CAP_FIREWARE);
-	cap.set(cv::CAP_PROP_FRAME_WIDTH, COL_CAM);	// set the resolution for camera. In this case, Column = 640
-	cap.set(cv::CAP_PROP_FRAME_HEIGHT,ROW_CAM); 	// Row = 480
-//	cap.set(cv::CAP_PROP_FPS,30);
-*/
-	printf("get camera ok\n");
-
-
-
-	//	cap.set(cv::CAP_PROP_FPS,120);
-	
-//	cap.set(cv::CAP_PROP_FRAME_WIDTH, 640);	
-//	cap.set(cv::CAP_PROP_FRAME_HEIGHT,240); 
-	if (cap.isOpened()== true)  //check if we succeeded
-		printf("Camera was opened. Please wait ...\n");
-	else
-		printf("Get error when open camera\n");
-	
+//	cap.set(cv::CAP_PROP_FRAME_WIDTH,COL_CAM);
+//	cap.set(cv::CAP_PROP_FRAME_HEIGHT,ROW_CAM);
+//	cap.set(cv::CAP_PROP_FPS,120);
+//	cv::waitKey(200);
+	while(1)
+	{
+		cap.read(frame);
+		imshow("VideoCapture",frame);
+		cv::waitKey(30);
+	}
 	printf("loading...\n");
 	cv::waitKey(2000);				// waiting to open whole camera
 	printf("Ready to capture!");
@@ -147,7 +128,8 @@ int main(int argc, char *argv[])
 
 		cap.read(frame);		//get image from camera directly
 		cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
-	
+//		imshow("capture image",frame);	
+//		cv::waitKey(30);
 		cv::cvtColor(frame,Lab_img,cv::COLOR_BGR2Lab);
 	
 		for (r=0;r<ROW;r++)

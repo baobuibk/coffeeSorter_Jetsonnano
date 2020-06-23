@@ -103,7 +103,8 @@ extern const double GAUSS_BLUR[5][5];
 
 //extern 	uint8	IMG_Border[ROW][COL];
 
-//#include "time.h"
+#include "time.h"
+#include "stdio.h"
 //==================================//
 void 	Test_matrix(uint8 IMG[ROW][COL],
 					uint8 type);			// 1: integer, 2: float
@@ -167,11 +168,16 @@ uint8 check_shape_color(uint8 	IMG_1[ROW][COL],
                         uint8	*pnb_object,
                         dbfl 	result[NUM_LIMIT_OBJ][4],
 //                        uint16  DUPLI_POS_MT[MAX_MT_POS][3],
-                        uint8   img1_sgm[ROW][COL],			// use for determining color
-                        uint8   img2_sgm[ROW][COL],
-                        uint8   img3_sgm[ROW][COL],
-                        uint8   img_check[ROW][COL]		// use for checking color
-                        );
+//                        dbfl   img1_sgm[ROW][COL],			// use for determining color
+//                        dbfl   img2_sgm[ROW][COL],
+//                        dbfl   img3_sgm[ROW][COL],
+                        uint8   img_check[ROW][COL],		// use for checking color
+                        dbfl 	*ptimer,
+			dbfl 	L[ROW][COL],
+			dbfl  	a[ROW][COL],
+			dbfl 	b[ROW][COL]
+//			uint16 	*ploop
+			);
 
 uint8 check_single_shape(dbfl       xO,
                          dbfl       yO,
@@ -184,20 +190,26 @@ void explore_single_img(uint16  posi_single[ROW_POSI_SINGLE][2],
                         uint8 	IMG_1[ROW][COL],
                         uint8 	IMG_2[ROW][COL],
                         uint8 	IMG_3[ROW][COL],
-                        uint8   img1_sgm[ROW][COL],			// use for determining color
-                        uint8   img2_sgm[ROW][COL],
-                        uint8   img3_sgm[ROW][COL],
+ //                       dbfl   img1_sgm[ROW][COL],			// use for determining color
+ //                       dbfl   img2_sgm[ROW][COL],
+ //                       dbfl   img3_sgm[ROW][COL],
                         uint8   img_check[ROW][COL],		// use for checking color
                         int16 	pnt_st,
-                        int16	pnt_end
+                        int16	pnt_end,
+			dbfl   L[ROW][COL],
+			dbfl   a[ROW][COL],
+			dbfl   b[ROW][COL]
  //                       uint16  check_ii
                         );
 
-uint8 	check_color(uint8   img1_sgm[ROW][COL],
-                    uint8   img2_sgm[ROW][COL],
-                    uint8   img3_sgm[ROW][COL],
-                    uint8   img_check[ROW][COL]
-                    );
+uint8 check_color(uint8   img_check[ROW][COL],
+		  dbfl    L[ROW][COL],
+		  dbfl    a[ROW][COL],
+		  dbfl    b[ROW][COL]
+                 );
+//		    uint8   img1_sgm[ROW][COL],
+//                    uint8   img2_sgm[ROW][COL],
+//                    uint8   img3_sgm[ROW][COL],
 
 void rgb2lab(	uint8   img1_sgm[ROW][COL],
                 uint8   img2_sgm[ROW][COL],
