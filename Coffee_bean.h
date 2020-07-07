@@ -224,6 +224,9 @@ void Test_pnt2(uint8 **b);
 
 
 
+void timer_handler(int signum);
+
+
 //============================================INLINE FUNCTION
 //------------------------------- Approximative POW
 static inline double fastPow(double a, double b) {

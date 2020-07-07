@@ -8,7 +8,8 @@
 #include <stdio.h>
 //#include <time.h>
 #include "opencv2/opencv.hpp"
-
+#include <signal.h>
+#include <sys/time.h>
 
 //using namespace cv;
 //=============================================== global
@@ -33,18 +34,16 @@ dbfl   	b[ROW][COL];
 
 int   check=1;
 
-
-
 //===============================================
 
 int main(int argc, char *argv[])
 {
-//
+/************ Check version for openCV
 	std::cout << "OpenCV version : " << CV_VERSION << std::endl;
         std::cout << "Major version : " << CV_MAJOR_VERSION << std::endl;
         std::cout << "Minor version : " << CV_MINOR_VERSION << std::endl;
         std::cout << "Subminor version : " << CV_SUBMINOR_VERSION << std::endl;
-
+*************/
 
 	printf("camera starts opening \n");
 
@@ -57,6 +56,22 @@ int main(int argc, char *argv[])
 	clock_t start_time=0,end_time=0;
 	uint32 r,c;
 
+
+	//------------------------Install timer_handler as the signal handler for SIGNTALRM
+	struct sigaction sa;
+	memset(&sa,0,sizeof(sa));
+	sa.sa_handler = &timer_handler;
+	sigaction(SIGVTALRM, &sa, NULL);
+	
+	//------------------------Config timer
+	struct itimerval timer;
+	timer.it_value.tv_sec = 0;
+	timer.it_value.tv_usec = 30000;
+	timer.it_interval.tv_sec = 0;
+	timer.it_interval.tv_usec = 30000;
+	setitimer(ITIMER_VIRTUAL, &timer, NULL);
+
+
 	//========================================= Get camera
 	cv::Mat  frame(ROW_CAM, COL_CAM, CV_8UC3);
 	cv::Mat  image(ROW,COL,CV_8UC3);
@@ -65,14 +80,9 @@ int main(int argc, char *argv[])
 	cv::Vec3b *pLab;
 //	uint8 B[ROW_CAM][COL_CAM],G[ROW_CAM][COL_CAM],R[ROW_CAM][COL_CAM];
 	uint8 B[ROW][COL],G[ROW][COL],R[ROW][COL];
-/*
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	const char* gst = "v4l2src  ! video/x-raw(memory:NVMM), format=(string)NV12, width=(int)640, height=(int)480, framerate=(fraction)120/1 ! \
-			nvvidconv         ! video/x-raw,              format=(string)BGRx ! \
-			videoconvert      ! video/x-raw,              format=(string)BGR  ! \
-			appsink";
-	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-*/
+	
+	
+	
 	printf("camera is about to open \n");
 
 //	lsmod
@@ -127,7 +137,7 @@ int main(int argc, char *argv[])
 
 
 	write_img2txt(R,RED_);
-	write_img2txt(G,GREEN_);
+	memset write_img2txt(G,GREEN_);
 	write_img2txt(B,BLUE_);
 	printf("Success when writting\n");	
 
@@ -137,6 +147,10 @@ int main(int argc, char *argv[])
 	dbfl    sumtimer= 0;
 	uint16  loop1 = 0;
 	dbfl  	max = 0;
+
+
+
+
 	//=============================================MAIN FUNCTION
 	while(1)
 	{
