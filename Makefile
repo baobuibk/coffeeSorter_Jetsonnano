@@ -3,7 +3,7 @@ CFLAGS=-g -O2 -Wall -std=c++11 -c
 
 OPENCV = `pkg-config opencv4 --cflags --libs`
 #OPENCV = -L/opt/opencv_3.2.0/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio\
-	-I/opt/opencv_3.2.0/include/
+#	-I/opt/opencv_3.2.0/include/
 #	-I/opt/opencv_3.2.0/include/opencv4
 LIBS   = $(OPENCV)
 
@@ -16,7 +16,7 @@ objects = Coffee_bean.o          read_IMG_RGB.o           Segmentation_RGB.o \
 	  check_single_shape.o   explore_single_img.o     check_color.o \
 	  rgb2lab.o              gauss5x5_table.o         rgb2lab_table.o \
           Test_matrix.o          Test_matrix_sub.o        read_IMG_Gray.o \
-	  write_img2txt.o
+	  write_img2txt.o	 timer_handler.o
 
 
 all : $(objects)
@@ -99,6 +99,9 @@ read_IMG_Gray.o :        read_IMG_Gray.c Coffee_bean.h
 
 write_img2txt.o:  	 write_img2txt.c Coffee_bean.h
 	$(CC) $(CFLAGS)	 write_img2txt.c
+
+timer_handler.o:	timer_handler.c Coffee_bean.h
+	$(CC) $(CFLAGS)  timer_handler.c
 
 .PHONY : clean
 clean:

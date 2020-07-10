@@ -36,6 +36,9 @@ extern "C" {
 
 #define GOOD                        1
 #define BAD  			    0
+#define ENABLE                      1
+#define DISABLE                     0
+
 
 #define ROW_CAM			    480
 #define COL_CAM 		    640
@@ -93,7 +96,7 @@ extern const double GAUSS_BLUR[5][5];
 #define ADD_BINARY_THR  -10
 
 //==================================// GLOBAL
-
+extern		uint8	flag_timer;
 //extern 	uint8 	IMG_1[ROW][COL];
 //extern	uint8 	IMG_2[ROW][COL];
 //extern 	uint8	IMG_3[ROW][COL];
@@ -103,8 +106,8 @@ extern const double GAUSS_BLUR[5][5];
 
 //extern 	uint8	IMG_Border[ROW][COL];
 
-#include "time.h"
-#include "stdio.h"
+//#include "time.h"
+//#include "stdio.h"
 //==================================//
 void 	Test_matrix(uint8 IMG[ROW][COL],
 					uint8 type);			// 1: integer, 2: float
@@ -224,7 +227,7 @@ void Test_pnt2(uint8 **b);
 
 
 
-void timer_handler(int signum);
+void timer_handler(int sig);
 
 
 //============================================INLINE FUNCTION

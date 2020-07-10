@@ -1,8 +1,12 @@
 #include "Coffee_bean.h"
+#include <stdio.h>
 
-void timer_handler(int signum)
+
+
+void timer_handler(int sig)
 {
-	static int32 count = 0;
-	printf("processing in timer handler %d times\n",++count);
+	static uint8 count_in=0;
+	flag_timer = ENABLE;
+	printf("processing in timer handler %d\n",++count_in);
 	
 }
