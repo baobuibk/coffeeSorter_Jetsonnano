@@ -143,10 +143,10 @@ int main(int argc, char *argv[])
 		 	printf("Value timer at %d\n",++count);
 	
 			//------------------------ initializing for timer to count algorithm processing time
-			start_time = 0;
-			end_time   = 0;
+//			start_time = 0;
+//			end_time   = 0;
 
-			start_time = clock();
+//			start_time = clock();
 
 			//------------------------ read frame from camera directly
 			cap.read(frame);	
@@ -200,22 +200,22 @@ int main(int argc, char *argv[])
 				}	
 			}
 			else continue;
-
-			end_time = clock();
-			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
-			printf("time = %4f \n",seconds);
-			if (++loop1 >150)
-				break;
-			else
-			{
+/*
+//			end_time = clock();
+//			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
+//			printf("time = %4f \n",seconds);
+//			if (++loop1 >150)
+//				break;
+//			else
+//			{
 				(seconds>max)?max=seconds:max=max;
 			 	sumtimer += seconds;
-			}	
 			}
+*/	
+		}
 		printf("end here\n");
 		if (count == 40) break;
-
-		}
+	}
 
 	cap.release();
 	
