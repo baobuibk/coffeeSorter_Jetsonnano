@@ -6,15 +6,19 @@
 #include <fcntl.h>
 #include <poll.h>
 
- /****************************************************************
- * Constants
+#include<unistd.h>
+unsigned int microsecond = 1000000;
+
+/* Constants
  ****************************************************************/
  
 #define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 #define MAX_BUF 64
 
-#define GPIO_RST_TIMER 12
+#define GPIO_RST_TIMER 168
+#define DIR_OUT  	1
+#define DIR_IN 		0
 /****************************************************************
  * gpio_export
  ****************************************************************/
@@ -197,15 +201,17 @@ int main()
 
 
 	gpio_export(gpio);
-	gpio_set_dir(gpio, 0);
-	gpio_set_edge(gpio, "rising");
-	gpio_fd = gpio_fd_open(gpio);
+	gpio_set_dir(gpio, DIR_OUT);
+//	gpio_set_edge(gpio, "rising");
+//	gpio_fd = gpio_fd_open(gpio);
 	while(1)
 	{
+		usleep(microsecond);//sleeps for 1 second
+
 		gpio_set_value(gpio,1);
-//		for (int ii=0;ii<10000;ii++);
-//		gpio_set_value(gpio,1);
-//		for (int ii=0;ii<10000;ii++);
+		usleep(microsecond);//sleeps for 1 second
+
+		gpio_set_value(gpio,0);
 	}
 
 //	timeout = POLL_TIMEOUT;
