@@ -16,7 +16,10 @@ unsigned int microsecond = 1000000;
 #define POLL_TIMEOUT (3 * 1000) /* 3 seconds */
 #define MAX_BUF 64
 
-#define GPIO_RST_TIMER 168
+#define GPIO_RST_TIMER 168		//PIN 32 onboard
+#define GPIO_38 	38 		//PIN 33 onboard
+//... so on, defind again GPIO and UART pin for header.
+
 #define DIR_OUT  	1
 #define DIR_IN 		0
 /****************************************************************
