@@ -218,6 +218,7 @@ int main()
 	}
 
 //	timeout = POLL_TIMEOUT;
+
 /* 
 	while (1) {
 		memset((void*)fdset, 0, sizeof(fdset));
