@@ -23,10 +23,10 @@ uint8 Segmentation_RGB(uint8 IMG_1[ROW][COL],
 {
     //======================================// declare
     uint16 	i        =   0,
-            	j        =   0,
-            	nb_label =   0;
+            j        =   0,
+            nb_label =   0;
 
-    uint8   	IMGBitem[ROW][COL];
+    uint8   IMGBitem[ROW][COL];
     int16 	THRBLUE  =   0;
 
     //======================================// Calculate Otsu Thr
