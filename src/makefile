@@ -19,7 +19,7 @@ objects = 	Coffee_bean.o          read_IMG_RGB.o           Segmentation_RGB.o \
 	  	check_single_shape.o   explore_single_img.o     check_color.o \
 	  	rgb2lab.o              gauss5x5_table.o         rgb2lab_table.o \
           	Test_matrix.o          Test_matrix_sub.o        read_IMG_Gray.o \
-	  	write_img2txt.o	 	timer_handler.o)
+	  	write_img2txt.o	 	timer_handler.o
 
 
 all : $(objects)
