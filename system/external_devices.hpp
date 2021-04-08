@@ -13,7 +13,8 @@
 
 #include "img_processing_library/type.h"
 #include <opencv2/opencv.hpp>
-
+#include <signal.h>
+#include <sys/time.h>
 
 //==================================
 //INCLUDE FOR GPIO
@@ -63,6 +64,16 @@ class external_devices
 		int gpio_set_edge(unsigned int gpio, char *edge);
 		int gpio_fd_open(unsigned int gpio);
 		int gpio_fd_close(int fd);
+
+		//---------------------
+		//Timer functions
+		int config_timer_us(uint16 value);
+		int enable_timer();
+		int disable_timer();
+		
+	private:
+		struct itimerval timer;
+	//	struct sigaction sa;
 
 };
 

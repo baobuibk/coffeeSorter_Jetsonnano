@@ -25,7 +25,9 @@
 uint16    arr_posi_obj[ROW_POSI_SINGLE][2];             // Contain positions of border pixels
 
 
-
+uint16 gpio = GPIO_RST_TIMER;
+    	
+external_devices de_cfbean;			   // declare variable for external_devices class	
 
 //===============================================
 // 	This function using for timer interupt
@@ -37,8 +39,8 @@ void timer_handler(int)
 	static uint8 count=0;
 	count++;
 
-	if (count%2==1) gpio_set_value(gpio,1);
-	else		gpio_set_value(gpio,0);
+	if (count%2==1) de_cfbean.gpio_set_value(gpio,1);
+	else		de_cfbean.gpio_set_value(gpio,0);
 }
 
 
@@ -73,9 +75,10 @@ int main(int argc, char *argv[])
 	uint16 	    	nb_object = 0;                      // Store the number of meaningful object
    
 	img_pro 	img_pro_cfbean;                     // Object for class imagpe processing library
-	Algorithm_Cfbean    alg_cfbean;                        // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
-	cv::VideoCapture    cap;
-    
+	Algorithm_Cfbean    alg_cfbean;                     // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
+	cv::VideoCapture    cap;	
+ 	struct sigaction sa;
+ /*    	
     	PATH		    path_re =	"img_processing_library/Sample_txt/RGB_Red1.txt";
     	PATH		    path_gr =	"img_processing_library/Sample_txt/RGB_Green1.txt";
     	PATH		    path_bl =	"img_processing_library/Sample_txt/RGB_Blue1.txt";
@@ -84,13 +87,40 @@ int main(int argc, char *argv[])
     	PATH            path_re_bgr = "img_processing_library/Sample_txt/background_red.txt";
     	PATH            path_gr_bgr = "img_processing_library/Sample_txt/background_green.txt";
     	PATH            path_bl_bgr = "img_processing_library/Sample_txt/background_blue.txt";
+*/
+	
 
-    	external_devices de_cfbean;
-
+	//--------------------------
+	//set up camera
+	//--------------------------
     	de_cfbean.open_camera(cap);
+	
+	
+	//--------------------------
+	//set up gpio
+	//--------------------------
+	de_cfbean.gpio_export(gpio);			//enable to export gpio
+	de_cfbean.gpio_set_dir(gpio,DIR_OUT);		//set direction of gpio
+	
+	//--------------------------
+	//config interupt
+	//--------------------------
+	sigemptyset(&sa.sa_mask);
+        sa.sa_flags 	= 0;
+        sa.sa_handler 	= &timer_handler;                 // address of handler
+        sigaction (SIGALRM, &sa, NULL);
 
 
-    
+
+	//--------------------------
+	//config timer
+	//--------------------------
+	de_cfbean.config_timer_us(100); 		//100us
+	de_cfbean.enable_timer();	
+
+	while(1);
+
+	return 0;
 
 
 
@@ -116,7 +146,6 @@ int main(int argc, char *argv[])
         alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 
     }
-
 
     */
 }

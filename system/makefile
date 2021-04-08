@@ -14,13 +14,8 @@ VPATH  = img_processing_library                                    #use vpath wh
 
 
 
-objects = 	Coffee_bean.o          external_devices.o     
-
-
-
-
-
-
+objects = 	Coffee_bean.o	timer.o \
+	   	gpio.o 		open_camera.o	
 
 
 
@@ -32,9 +27,18 @@ all : $(objects)
 Coffee_bean.o :  	Coffee_bean.cpp Coffee_bean.hpp img_processing.hpp
 	$(CC) $(CFLAGS) $(LIBS) Coffee_bean.cpp 
 
-external_devices.o :     external_devices.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIBS) external_devices.cpp	
+#external_devices.o :     external_devices.cpp external_devices.hpp
+#	$(CC) $(CFLAGS) $(LIBS) external_devices.cpp	
 
+
+timer.o: 		timer.cpp external_devices.hpp
+	$(CC) $(CFLAGS) $(LIB) 	timer.cpp
+
+gpio.o: 		gpio.cpp external_devices.hpp
+	$(CC) $(CFLAGS) $(LIB)	gpio.cpp
+
+open_camera.o: 		open_camera.cpp external_devices.hpp
+	$(CC) $(CFLAGS) $(LIB)	open_camera.cpp
 
 
 
