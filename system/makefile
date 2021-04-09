@@ -32,13 +32,13 @@ Coffee_bean.o :  	Coffee_bean.cpp Coffee_bean.hpp img_processing.hpp
 
 
 timer.o: 		timer.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIB) 	timer.cpp
+	$(CC) $(CFLAGS) $(LIBS) 	timer.cpp
 
 gpio.o: 		gpio.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIB)	gpio.cpp
+	$(CC) $(CFLAGS) $(LIBS)	gpio.cpp
 
 open_camera.o: 		open_camera.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIB)	open_camera.cpp
+	$(CC) $(CFLAGS) $(LIBS)	open_camera.cpp
 
 
 
@@ -48,7 +48,7 @@ open_camera.o: 		open_camera.cpp external_devices.hpp
 
 
 
-PHONY : clean
+.PHONY : clean
 clean:
 	rm -rf all $(objects)
 

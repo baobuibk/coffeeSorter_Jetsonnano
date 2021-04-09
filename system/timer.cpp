@@ -17,7 +17,8 @@ int external_devices::config_timer_us(uint16 value)
         timer.it_interval.tv_sec        = 0;
         timer.it_interval.tv_usec       = value;
 
-        return 0;
+ 
+ 	return 0;
 }
 
 /****************************************************************
@@ -45,3 +46,17 @@ int external_devices::disable_timer()
         return 0;
 }
 
+/*
+****************************************************************
+ * config interupt
+ ***************************************************************
+int external_devices::config_interrupt(void *paddr)
+{
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags     = 0;
+	sa.sa_handler   = paddr;                 // address of handler
+	sigaction (SIGALRM, &sa, NULL);
+	return 0;
+
+}
+*/

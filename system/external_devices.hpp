@@ -70,10 +70,16 @@ class external_devices
 		int config_timer_us(uint16 value);
 		int enable_timer();
 		int disable_timer();
+	
+
+		//---------------------
+		//Interrupt functions
 		
+//		int config_interrupt(void *paddr);
+
 	private:
-		struct itimerval timer;
-	//	struct sigaction sa;
+		struct itimerval timer;			//using for timer
+//		struct sigaction sa;			// using for interupt	
 
 };
 

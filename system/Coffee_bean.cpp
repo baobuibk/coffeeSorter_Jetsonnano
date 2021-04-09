@@ -105,6 +105,8 @@ int main(int argc, char *argv[])
 	//--------------------------
 	//config interupt
 	//--------------------------
+//	de_cfbean.config_interrupt(paddr_int);	
+				   	
 	sigemptyset(&sa.sa_mask);
         sa.sa_flags 	= 0;
         sa.sa_handler 	= &timer_handler;                 // address of handler
@@ -117,6 +119,14 @@ int main(int argc, char *argv[])
 	//--------------------------
 	de_cfbean.config_timer_us(100); 		//100us
 	de_cfbean.enable_timer();	
+	
+
+	//--------------------------
+	//Uart
+	
+
+
+
 
 	while(1);
 
