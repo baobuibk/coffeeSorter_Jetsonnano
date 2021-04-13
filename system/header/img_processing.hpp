@@ -9,11 +9,9 @@
 #define IMAGE_HEADER
 
 #include "type.h"
-#include "Gaussian_table.h"
+//#include "Gaussian_table.h"
 #include <iostream>
 #include <stdlib.h> 
-
-
 
 #define ROW				480
 #define COL				640
@@ -42,15 +40,15 @@
 
 #define ROW_POSI_SINGLE 10000
 
-#define E_B_S_First_point 						2
-#define E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL 	3              //E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL
-#define E_B_S_NOISE_OBJECT						4
+#define E_B_S_First_point 				2
+#define E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL 		3              //E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL
+#define E_B_S_NOISE_OBJECT				4
 
 #define OV_LB			501
 
 
 
-extern uint8 		M[ROW][COL];
+//extern uint8 		M[ROW][COL];
 
 //========================================== Matrix CLASS 
 class Matrix

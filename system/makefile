@@ -1,54 +1,58 @@
-CC=g++
-CFLAGS=-g -O2 -Wall -std=c++11 -c
 
-#SRCDIR := src
-#OBJDIR := bin
+CC:=g++
+CPPLAGS:=-g -O2 -Wall -std=c++11 -c
 
+#--------------------------------------
+#	IMPORT OPENCV LIBRARY
+#--------------------------------------
 OPENCV = `pkg-config opencv4 --cflags --libs`
+LIBS   = $(OPENCV)
+
+
+
+#****************************************************************************************************
 #OPENCV = -L/opt/opencv_3.2.0/lib -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_videoio\
 #	-I/opt/opencv_3.2.0/include/
 #	-I/opt/opencv_3.2.0/include/opencv4
-LIBS   = $(OPENCV)
-
-VPATH  = img_processing_library                                    #use vpath when using a specific file inside another directory
+#****************************************************************************************************
 
 
 
-objects = 	Coffee_bean.o	timer.o \
-	   	gpio.o 		open_camera.o	
+#--------------------------------------
+#	LET MAKEFILE KNOW THE DIRECTORY
+#--------------------------------------
+#VPATH = src:src/img_processing_library:src/external_devices
+vpath %.cpp src:src/img_processing_library:src/external_devices
+vpath %.hpp header
+vpath %.h   header
+
+CPPLAGS += -Iheader	# I stand for include header
+
+#--------------------------------------
+#	STORE THE OBJECT FILE
+#--------------------------------------
+OBJDIR 	:=bin
+OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o)
 
 
 
-
-all : $(objects)
-	$(CC)	-o all $(objects) $(LIBS)
-
-
-Coffee_bean.o :  	Coffee_bean.cpp Coffee_bean.hpp img_processing.hpp
-	$(CC) $(CFLAGS) $(LIBS) Coffee_bean.cpp 
-
-#external_devices.o :     external_devices.cpp external_devices.hpp
-#	$(CC) $(CFLAGS) $(LIBS) external_devices.cpp	
+#--------------------------------------
+#		RULE
+#--------------------------------------
+all: $(OBJS)
+	$(CC) -o all $(LIBS) $(OBJS)
 
 
-timer.o: 		timer.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIBS) 	timer.cpp
-
-gpio.o: 		gpio.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIBS)	gpio.cpp
-
-open_camera.o: 		open_camera.cpp external_devices.hpp
-	$(CC) $(CFLAGS) $(LIBS)	open_camera.cpp
+$(OBJDIR)/%.o: %.cpp
+	$(CC) $(CPPLAGS) $(LIBS) $< -o $@
 
 
-
-
-
-
-
-
+#--------------------------------------
+#	make clean 
+# Using to clean all *.o file
+# -------------------------------------
 
 .PHONY : clean
 clean:
-	rm -rf all $(objects)
+	rm -rf all $(OBJS)
 

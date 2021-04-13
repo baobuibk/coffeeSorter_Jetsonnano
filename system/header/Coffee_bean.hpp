@@ -8,8 +8,8 @@
 #ifndef COFFEE_HEADER
 #define COFFEE_HEADER
 
-#include "img_processing_library/img_processing.hpp"
-
+#include "img_processing.hpp"
+#include "external_devices.hpp"
 //==================================// DEFINE
 #define ADD_BINARY_THR	-17
 
@@ -37,22 +37,23 @@
 class Algorithm_Cfbean
 {
 public:
-    uint8 Coffee_Segmentation(Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl, Matrix& Img_Bi, img_pro &img_pro_cfbean);
-    uint8 features_evaluation(	Matrix		&Img_seg, 
-				Matrix16	&img_label, 
-				uint16		nb_object, 
-				uint16		order_label[100], 
-				uint16		result[500][4],
-				uint16		arr_posi_obj[ROW_POSI_SINGLE][2],
-				Algorithm_Cfbean &alg_cfbean);
+	uint8 Coffee_Segmentation(Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl, Matrix& Img_Bi, img_pro &img_pro_cfbean);
+	
+	uint8 features_evaluation(	Matrix		&Img_seg, 
+					Matrix16	&img_label, 
+					uint16		nb_object, 
+					uint16		order_label[100], 
+					uint16		result[500][4],
+					uint16		arr_posi_obj[ROW_POSI_SINGLE][2],
+					Algorithm_Cfbean &alg_cfbean);
 
-    uint8 evaluate_color(	Matrix&		Img_seg,
+	uint8 evaluate_color(	Matrix&		Img_seg,
 				Matrix16&	img_label,
 				uint16		nb_object,
 				uint16		result_color[500][4]);
 
 
- 	uint8 check_roundness(	uint16		arr_posi_obj[ROW_POSI_SINGLE][2],
+	uint8 check_roundness(	uint16		arr_posi_obj[ROW_POSI_SINGLE][2],
 				Matrix16&	img_label,
 				uint16		nb_obj);
 

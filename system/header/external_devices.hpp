@@ -11,7 +11,7 @@
 #ifndef EXTERNAL_HEADER
 #define EXTERNAL_HEADER
 
-#include "img_processing_library/type.h"
+#include "type.h"
 #include <opencv2/opencv.hpp>
 #include <signal.h>
 #include <sys/time.h>

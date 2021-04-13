@@ -16,9 +16,8 @@
 
 #include <opencv2/opencv.hpp>
 #include <stdio.h>
-#include "img_processing_library/img_processing.hpp"
 #include "Coffee_bean.hpp"
-#include "external_devices.hpp"
+
 
 
 //=============================================== global
@@ -52,11 +51,11 @@ void timer_handler(int)
 //
 //===============================================
 
-int main(int argc, char *argv[])
+int main()
 {
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
     //------------------------ 
-	uint16          result[500][4];                     // store results after processing 
+/*	uint16          result[500][4];                     // store results after processing 
 	Matrix          re_bgr;                             // red background
 	Matrix          gr_bgr;                             // green background
 	Matrix          bl_bgr;                             // blue background
@@ -73,9 +72,10 @@ int main(int argc, char *argv[])
     
  	uint16          order_label[100];                   // Contain the order of obj after the processing 
 	uint16 	    	nb_object = 0;                      // Store the number of meaningful object
-   
+ 
 	img_pro 	img_pro_cfbean;                     // Object for class imagpe processing library
 	Algorithm_Cfbean    alg_cfbean;                     // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
+*/
 	cv::VideoCapture    cap;	
  	struct sigaction sa;
  /*    	
@@ -124,18 +124,14 @@ int main(int argc, char *argv[])
 	//--------------------------
 	//Uart
 	
+/*
+	while(1)
+	{
 
-
-
-
-	while(1);
+	}
+*/
 
 	return 0;
-
-
-
-
-
     /*
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ALGORITHM
     //------------------------ Reading background
