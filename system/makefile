@@ -1,10 +1,12 @@
 
-CC:=g++
-CPPLAGS:=-g -O2 -Wall -std=c++11 -c
+CC=g++
+CFLAGS=-g -O2 -Wall -std=c++11 -c
+
 
 #--------------------------------------
 #	IMPORT OPENCV LIBRARY
 #--------------------------------------
+
 OPENCV = `pkg-config opencv4 --cflags --libs`
 LIBS   = $(OPENCV)
 
@@ -22,16 +24,17 @@ LIBS   = $(OPENCV)
 #	LET MAKEFILE KNOW THE DIRECTORY
 #--------------------------------------
 #VPATH = src:src/img_processing_library:src/external_devices
+
 vpath %.cpp src:src/img_processing_library:src/external_devices
 vpath %.hpp header
 vpath %.h   header
 
-CPPLAGS += -Iheader	# I stand for include header
-
+CFLAGS += -Iheader	# I stands for include header
+#CFLAGS += -ILIBS
 #--------------------------------------
 #	STORE THE OBJECT FILE
 #--------------------------------------
-OBJDIR 	:=bin
+OBJDIR 	:= bin
 OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o)
 
 
@@ -40,11 +43,11 @@ OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o)
 #		RULE
 #--------------------------------------
 all: $(OBJS)
-	$(CC) -o all $(LIBS) $(OBJS)
+	$(CC) -o all $(OBJS) $(LIBS)	//remember to place $(LIBS) behind $(OBJS)
 
 
 $(OBJDIR)/%.o: %.cpp
-	$(CC) $(CPPLAGS) $(LIBS) $< -o $@
+	$(CC) $(CFLAGS) $(LIBS) $< -o $@
 
 
 #--------------------------------------

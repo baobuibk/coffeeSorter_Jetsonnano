@@ -18,8 +18,6 @@
 #include <stdio.h>
 #include "Coffee_bean.hpp"
 
-
-
 //=============================================== global
 uint16    arr_posi_obj[ROW_POSI_SINGLE][2];             // Contain positions of border pixels
 
