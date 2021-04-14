@@ -26,6 +26,7 @@ LIBS   = $(OPENCV)
 #VPATH = src:src/img_processing_library:src/external_devices
 
 vpath %.cpp src:src/img_processing_library:src/external_devices
+vpath %.c   src/external_devices
 vpath %.hpp header
 vpath %.h   header
 
@@ -35,7 +36,8 @@ CFLAGS += -Iheader	# I stands for include header
 #	STORE THE OBJECT FILE
 #--------------------------------------
 OBJDIR 	:= bin
-OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o)
+OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o \
+				  afproto.o 	crc16.o	uart.o)
 
 
 
@@ -43,7 +45,7 @@ OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o)
 #		RULE
 #--------------------------------------
 all: $(OBJS)
-	$(CC) -o all $(OBJS) $(LIBS)	//remember to place $(LIBS) behind $(OBJS)
+	$(CC) -o all $(OBJS) $(LIBS)	#remember to place $(LIBS) behind $(OBJS)
 
 
 $(OBJDIR)/%.o: %.cpp

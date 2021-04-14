@@ -1,4 +1,4 @@
-/*
+/***************************************************
  * Coffee_bean_main.cpp
  * Created on: Aug 19, 2019
  * Author: ducan
@@ -11,12 +11,20 @@
  *              ....
  *          xn  yn   colorn   shapen
  * where n = 500
- */
+ **************************************************/
+
 //#include "Coffee_bean.h"
 
 #include <opencv2/opencv.hpp>
 #include <stdio.h>
 #include "Coffee_bean.hpp"
+
+
+#include "uart.h"
+#include "crc16.h"
+#include "afproto.h"
+
+
 
 //=============================================== global
 uint16    arr_posi_obj[ROW_POSI_SINGLE][2];             // Contain positions of border pixels
@@ -51,8 +59,41 @@ void timer_handler(int)
 
 int main()
 {
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
-    //------------------------ 
+
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+    // 		Using to test Uart
+    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+	
+	uint16 	shooting_time = 0x1309;
+	uint8  	channel =	0x11;
+	uint16	lenbuff =	3;
+	Uart 	test;
+
+	uint8 	msb_shooting_time = (shooting_time >> 8) & 0xFF;
+	uint8 	lsb_shooting_time = (shooting_time >> 0) & 0xFF;
+
+	const char 	buff[3] = {channel, msb_shooting_time,lsb_shooting_time};
+	char 		encode_buff[20];
+	uint8 		encode_buff_Uart[20];
+	uint16		p_endcode_len;
+
+	afproto_frame_data(buff, lenbuff ,encode_buff, &p_endcode_len);
+
+	
+	for (uint8 i=0; i<20;i++)
+	{
+		encode_buff_Uart[i] = (uint8)encode_buff[i];
+		printf("%x \n", encode_buff_Uart[i]);
+	}
+
+
+
+ 	test.sendUart(encode_buff_Uart);
+	test.closeUart();
+
+	return 0;
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
+    	//------------------------ 
 /*	uint16          result[500][4];                     // store results after processing 
 	Matrix          re_bgr;                             // red background
 	Matrix          gr_bgr;                             // green background
@@ -87,12 +128,11 @@ int main()
     	PATH            path_bl_bgr = "img_processing_library/Sample_txt/background_blue.txt";
 */
 	
-
+	/*
 	//--------------------------
 	//set up camera
 	//--------------------------
-    	de_cfbean.open_camera(cap);
-	
+    	de_cfbean.open_camera(cap);	
 	
 	//--------------------------
 	//set up gpio
@@ -122,14 +162,14 @@ int main()
 	//--------------------------
 	//Uart
 	
-/*
+
 	while(1)
 	{
 
 	}
-*/
 
 	return 0;
+	*/
     /*
     //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ALGORITHM
     //------------------------ Reading background

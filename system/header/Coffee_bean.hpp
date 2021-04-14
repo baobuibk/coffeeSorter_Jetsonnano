@@ -8,6 +8,7 @@
 #ifndef COFFEE_HEADER
 #define COFFEE_HEADER
 
+#include "type.h"
 #include "img_processing.hpp"
 #include "external_devices.hpp"
 //==================================// DEFINE
@@ -17,7 +18,10 @@
 #define THR_PERCENTAGE	0.07
 #define THR_SHAPE		1.16
 //==================================//
-
+#define START_BIT 	0x12
+#define STOP_BIT 	0x13
+#define ESC		0x7D
+#define OR_FLAG 	0x20
 
 //==================================// GLOBAL
 //extern		uint8	flag_timer;

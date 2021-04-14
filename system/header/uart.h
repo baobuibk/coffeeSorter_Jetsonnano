@@ -1,15 +1,15 @@
 
 /************************************/
-/* @auteur Mathieu Bahin            */
-/* @date_création mars 2020         */
+/* Author: Duc An	            */
+/* Date creating:  April 14	    */
 /* @version 1.0                     */
-/* @email bahin.mathieu@gmail.com   */
+/* @email ducannguyen96@gmail.com   */
 /************************************/
 
 #ifndef _UART_H
 #define _UART_H
 
-
+#include "type.h"
 
 // Define Constants
 //const char *uart_target = "/dev/ttyTHS1";
@@ -24,10 +24,6 @@
 #define OR_FLAG         0x20
 
 
-
-
-typedef     unsigned char  uint8;
-typedef     unsigned int   uint16;
 
 class Uart {
 private:
