@@ -18,11 +18,7 @@
 #include <opencv2/opencv.hpp>
 #include <stdio.h>
 #include "Coffee_bean.hpp"
-
-
 #include "uart.h"
-#include "crc16.h"
-#include "afproto.h"
 
 
 
@@ -32,8 +28,9 @@ uint16    arr_posi_obj[ROW_POSI_SINGLE][2];             // Contain positions of 
 
 uint16 gpio = GPIO_RST_TIMER;
     	
-external_devices de_cfbean;			   // declare variable for external_devices class	
-
+external_devices 	de_cfbean;			   // declare variable for external_devices class	
+uint16 			count=50000;
+uint16 			each_frame_count=0;
 //===============================================
 // 	This function using for timer interupt
 //
@@ -41,14 +38,12 @@ external_devices de_cfbean;			   // declare variable for external_devices class
 
 void timer_handler(int)
 {
-	static uint8 count=0;
-	count++;
+	
+	each_frame_count++;
 
 	if (count%2==1) de_cfbean.gpio_set_value(gpio,1);
 	else		de_cfbean.gpio_set_value(gpio,0);
 }
-
-
 
 
 
@@ -60,41 +55,9 @@ void timer_handler(int)
 int main()
 {
 
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-    // 		Using to test Uart
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-	
-	uint16 	shooting_time = 0x1309;
-	uint8  	channel =	0x11;
-	uint16	lenbuff =	3;
-	Uart 	test;
-
-	uint8 	msb_shooting_time = (shooting_time >> 8) & 0xFF;
-	uint8 	lsb_shooting_time = (shooting_time >> 0) & 0xFF;
-
-	const char 	buff[3] = {channel, msb_shooting_time,lsb_shooting_time};
-	char 		encode_buff[20];
-	uint8 		encode_buff_Uart[20];
-	uint16		p_endcode_len;
-
-	afproto_frame_data(buff, lenbuff ,encode_buff, &p_endcode_len);
-
-	
-	for (uint8 i=0; i<20;i++)
-	{
-		encode_buff_Uart[i] = (uint8)encode_buff[i];
-		printf("%x \n", encode_buff_Uart[i]);
-	}
-
-
-
- 	test.sendUart(encode_buff_Uart);
-	test.closeUart();
-
-	return 0;
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
     	//------------------------ 
-/*	uint16          result[500][4];                     // store results after processing 
+	uint16          result[500][4];                     // store results after processing 
 	Matrix          re_bgr;                             // red background
 	Matrix          gr_bgr;                             // green background
 	Matrix          bl_bgr;                             // blue background
@@ -114,9 +77,9 @@ int main()
  
 	img_pro 	img_pro_cfbean;                     // Object for class imagpe processing library
 	Algorithm_Cfbean    alg_cfbean;                     // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
-*/
 	cv::VideoCapture    cap;	
  	struct sigaction sa;
+	Uart 		cf_Uart;
  /*    	
     	PATH		    path_re =	"img_processing_library/Sample_txt/RGB_Red1.txt";
     	PATH		    path_gr =	"img_processing_library/Sample_txt/RGB_Green1.txt";
@@ -128,7 +91,6 @@ int main()
     	PATH            path_bl_bgr = "img_processing_library/Sample_txt/background_blue.txt";
 */
 	
-	/*
 	//--------------------------
 	//set up camera
 	//--------------------------
@@ -150,46 +112,20 @@ int main()
         sa.sa_handler 	= &timer_handler;                 // address of handler
         sigaction (SIGALRM, &sa, NULL);
 
-
-
 	//--------------------------
 	//config timer
 	//--------------------------
 	de_cfbean.config_timer_us(100); 		//100us
-	de_cfbean.enable_timer();	
-	
-
-	//--------------------------
-	//Uart
-	
+	de_cfbean.enable_timer();		
 
 	while(1)
 	{
 
+
+
 	}
 
 	return 0;
-	*/
-    /*
-    //=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= ALGORITHM
-    //------------------------ Reading background
-    if (img_pro_cfbean.read_txtIMG(re_bgr, gr_bgr, bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
-        printf("Reading background successfull\n");
-    else
-    {
-        printf("Reading background failed, please check again! Thanks\n");
-        exit(0);
-    }
 
-    //------------------------ Segmentate for image
-    if(img_pro_cfbean.read_txtIMG(Img_re, Img_gr, Img_bl, path_re, path_gr,path_bl) == _OK_)
-    {
-        img_pro_cfbean.Sub_image(Img_re, Img_gr, Img_bl, re_bgr, gr_bgr, bl_bgr, 40);
-        alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
-        img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
-        alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 
-    }
-
-    */
 }

@@ -14,9 +14,14 @@
 //==================================// DEFINE
 #define ADD_BINARY_THR	-17
 
-#define THR_PXL			11
+#define MAX_RESET 	50100
+#define RESET 		0
+
+
+
+#define THR_PXL		11
 #define THR_PERCENTAGE	0.07
-#define THR_SHAPE		1.16
+#define THR_SHAPE	1.16
 //==================================//
 #define START_BIT 	0x12
 #define STOP_BIT 	0x13

@@ -11,6 +11,8 @@
 #include <sys/fcntl.h>    // Used for UART
 #include <termios.h>      // Used for UART
 #include <string>
+#include "afproto.h"
+
 
 using namespace std;
 
@@ -107,6 +109,64 @@ Uart :: Uart (){
 
 }
 
+
+
+//--------------------------------------------------------------
+//
+//			SENDING UART (test here later)
+//--------------------------------------------------------------
+
+void Uart :: sendUart(uint8 *data,uint16 data_size)
+{	
+	if (fid != -1)
+	{
+		int count = write(fid, data, data_size);		//Filestream, bytes to write, number of bytes to write
+		printf("Count = %d\n", count);
+		if (count < 0)  printf("UART TX error\n");
+  	}
+
+}
+
+
+
+
+//--------------------------------------------------------------
+//	ENCODING DATA AND TRANSMITING TO NANO JETSON
+void Uart::Uart2kit(uint16 shooting_time, uint8 channel)
+{
+//	uint16  shooting_time = 0x1309;
+//        uint8   channel =       0x11;
+        uint16  lenbuff =       3;
+//        Uart    test;
+
+        uint8   msb_shooting_time = (shooting_time >> 8) & 0xFF;
+        uint8   lsb_shooting_time = (shooting_time >> 0) & 0xFF;
+
+        const char      buff[3] = {channel, msb_shooting_time,lsb_shooting_time};
+        char            encode_buff[20];                                                //using for store data that is encoded
+        uint8           encode_buff_Uart[20];                                           // data will be sent through Uart
+        uint16          p_endcode_len;							// length of data after encoded
+
+        afproto_frame_data(buff, lenbuff ,encode_buff, &p_endcode_len);
+
+
+        for (uint8 i=0; i< p_endcode_len;i++)
+        {
+                encode_buff_Uart[i] = (uint8)encode_buff[i];
+//                printf("%x \n", encode_buff_Uart[i]);
+        }
+
+
+
+       sendUart(encode_buff_Uart,p_endcode_len);
+//        test.closeUart();
+
+}
+
+
+/*
+//==============================================================
+
 void Uart :: sendUart(uint8 *msg){
   //--------------------------------------------------------------
   // TRANSMITTING BYTES
@@ -126,7 +186,7 @@ void Uart :: sendUart(uint8 *msg){
 
   if (fid != -1)
   {
-    int count = write(fid, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));		//Filestream, bytes to write, number of bytes to write
+    int count = write(fid, &tx_buffer[0], (p_tx_buffer - &tx_buffer[0]));               //Filestream, bytes to write, number of bytes to write
 
 //  usleep(1000);   // .001 sec delay
 
@@ -140,10 +200,18 @@ void Uart :: sendUart(uint8 *msg){
 
 }
 
+*/
+
+
+
+
+
+//--------------------------------------------------------------
+// TRANSMITTING BYTES WITH LOGICAL FEED BACK
+//--------------------------------------------------------------
+
 bool  Uart :: sendUart_fb(unsigned char *msg){
-  //--------------------------------------------------------------
-  // TRANSMITTING BYTES WITH LOGICAL FEED BACK
-  //--------------------------------------------------------------
+
   unsigned char tx_buffer[20];
   unsigned char *p_tx_buffer;
 

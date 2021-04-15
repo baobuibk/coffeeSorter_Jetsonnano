@@ -34,7 +34,9 @@ public:
 
 
   Uart ();
-  void sendUart(uint8 *msg);
+//  void sendUart(uint8 *msg);	 	
+  void sendUart(uint8 *data,uint16 data_size=20);
+  void Uart2kit(uint16 shooting_time, uint8 channel);
   bool sendUart_fb(unsigned char *msg);
   void readUart();
   void closeUart();

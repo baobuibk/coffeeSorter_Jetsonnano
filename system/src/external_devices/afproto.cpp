@@ -172,7 +172,7 @@ int afproto_frame_data(const char *src,
 		}
 
     *(dest++) = AFPROTO_END_BYTE;
-    *dest_len = dest - dest_start - 1;
+    *dest_len = dest - dest_start;
     return 0;
 }
 
