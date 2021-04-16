@@ -153,7 +153,7 @@ void Uart::Uart2kit(uint16 shooting_time, uint8 channel)
         for (uint8 i=0; i< p_endcode_len;i++)
         {
                 encode_buff_Uart[i] = (uint8)encode_buff[i];
-//                printf("%x \n", encode_buff_Uart[i]);
+                printf("%x \n", encode_buff_Uart[i]);
         }
 
 

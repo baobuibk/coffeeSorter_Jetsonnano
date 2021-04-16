@@ -23,14 +23,11 @@
 
 
 //=============================================== global
-uint16    arr_posi_obj[ROW_POSI_SINGLE][2];             // Contain positions of border pixels
+uint16    		arr_posi_obj[ROW_POSI_SINGLE][2];       // Contain positions of border pixels
+uint16 			gpio = GPIO_RST_TIMER;
+external_devices 	de_cfbean;			   	// declare variable for external_devices class	
+uint8			cap_flag=0;
 
-
-uint16 gpio = GPIO_RST_TIMER;
-    	
-external_devices 	de_cfbean;			   // declare variable for external_devices class	
-uint16 			count=50000;
-uint16 			each_frame_count=0;
 //===============================================
 // 	This function using for timer interupt
 //
@@ -38,11 +35,17 @@ uint16 			each_frame_count=0;
 
 void timer_handler(int)
 {
-	
-	each_frame_count++;
+	static uint16	clk=0;
+	clk++;
+	if (clk==50000)
+	{
+		clk = 0;
+ 		de_cfbean.gpio_set_value(gpio,0);
+	}
+	else	de_cfbean.gpio_set_value(gpio,1);
 
-	if (count%2==1) de_cfbean.gpio_set_value(gpio,1);
-	else		de_cfbean.gpio_set_value(gpio,0);
+	if ((clk%500) == 0) cap_flag = 1; 		//50ms
+//	printf("%d\n",clk);
 }
 
 
@@ -80,6 +83,8 @@ int main()
 	cv::VideoCapture    cap;	
  	struct sigaction sa;
 	Uart 		cf_Uart;
+	uint16 		time_test=0;
+
  /*    	
     	PATH		    path_re =	"img_processing_library/Sample_txt/RGB_Red1.txt";
     	PATH		    path_gr =	"img_processing_library/Sample_txt/RGB_Green1.txt";
@@ -115,13 +120,21 @@ int main()
 	//--------------------------
 	//config timer
 	//--------------------------
-	de_cfbean.config_timer_us(100); 		//100us
+	de_cfbean.config_timer_us(1000); 		//100us
 	de_cfbean.enable_timer();		
+	
+//	cf_Uart.Uart2kit(1000,11);
+
 
 	while(1)
 	{
-
-
+		if(cap_flag == 1)
+		{
+			cf_Uart.Uart2kit(time_test++,11);
+			cap_flag = 0;
+			printf("here==========================");
+		}
+		printf("%d \n",cap_flag);
 
 	}
 
