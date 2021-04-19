@@ -36,8 +36,9 @@ CFLAGS += -Iheader	# I stands for include header
 #	STORE THE OBJECT FILE
 #--------------------------------------
 OBJDIR 	:= bin
-OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o \
-				  afproto.o 	crc16.o	uart.o)
+OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o 	timer.o			gpio.o 				open_camera.o 		afproto.o 		crc16.o 		uart.o\
+				  Cc_label.o 		eliminate_noise_line.o 	get_automatic_thres_Otsu.o 	Sub_image.o 		thining_algorithm.o 	thin_step2_cd1.o 	thin_step2.o\
+	  			  compare_2matrix.o	Explore_border_single.o	pre_evaluation.o		Test_matrix_sub_dbfl.o	thin_step1.o 		thin_step2_cd2.o)
 
 
 

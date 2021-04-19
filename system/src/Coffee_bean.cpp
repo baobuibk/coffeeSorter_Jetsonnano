@@ -49,7 +49,7 @@ void timer_handler(int)
 	}
 	else	de_cfbean.gpio_set_value(gpio,1);
 
-	if ((clk%50) == 0) //500
+	if ((clk%500) == 0) //500
 	{
 		cap_flag = 1; 		//50ms
 		printf("clk: %d\n",clk);
@@ -94,6 +94,15 @@ int main()
 	Uart 		cf_Uart;
 	uint16 		time_test=0;
 
+	//========================Using for openCV
+	cv::Mat  frame(ROW_CAM, COL_CAM, CV_8UC3);
+	cv::Mat  image(ROW,COL,CV_8UC3);
+//	cv::Mat  Lab_img;
+	cv::Vec3b *ptr;
+//	cv::Vec3b *pLab;
+
+	uint16 r,c;
+
  /*    	
     	PATH		    path_re =	"img_processing_library/Sample_txt/RGB_Red1.txt";
     	PATH		    path_gr =	"img_processing_library/Sample_txt/RGB_Green1.txt";
@@ -129,7 +138,7 @@ int main()
 	//--------------------------
 	//config timer
 	//--------------------------
-	de_cfbean.config_timer_us(10000); 		//100us
+	de_cfbean.config_timer_us(100); 		//100us
 	de_cfbean.enable_timer();		
 	
 //	cf_Uart.Uart2kit(1000,11);
@@ -139,8 +148,29 @@ int main()
 	{
 		if(cap_flag == 1)
 		{
-			cf_Uart.Uart2kit(clk+(time_test++),5);
-			cap_flag = 0;
+			cap_flag=0;
+			cap.read(frame);		//get image from camera directly
+			cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
+			
+			for (r=0;r<ROW;r++)
+			{
+				ptr = image.ptr<cv::Vec3b>(r);
+				for(c=0;c<COL;c++)
+				{
+				Img_re.set(r,c) = ptr[c][2];
+				Img_gr.set(r,c) = ptr[c][1];
+				Img_bl.set(r,c) = ptr[c][0];
+				}
+			}
+			
+
+			img_pro_cfbean.Sub_image(Img_re, Img_gr, Img_bl, re_bgr, gr_bgr, bl_bgr, 40);
+        		alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
+        		img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
+        		alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+			
+			//=========================Using to transfer to Uart
+//			cf_Uart.Uart2kit(clk+(time_test++),5);
 		
 		}
 		
