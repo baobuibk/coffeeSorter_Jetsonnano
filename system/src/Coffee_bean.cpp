@@ -26,17 +26,22 @@
 uint16    		arr_posi_obj[ROW_POSI_SINGLE][2];       // Contain positions of border pixels
 uint16 			gpio = GPIO_RST_TIMER;
 external_devices 	de_cfbean;			   	// declare variable for external_devices class	
-uint8			cap_flag=0;
+uint8	volatile 	cap_flag=0;
+uint16 			clk = 0;
 
 //===============================================
-// 	This function using for timer interupt
+// 	This function is used for timer interupt
 //
 // ==============================================
 
 void timer_handler(int)
 {
-	static uint16	clk=0;
+//	static uint16	clk=0;
 	clk++;
+	//---------------------------
+	//rst if get 50000 clk
+	//---------------------------
+	
 	if (clk==50000)
 	{
 		clk = 0;
@@ -44,7 +49,11 @@ void timer_handler(int)
 	}
 	else	de_cfbean.gpio_set_value(gpio,1);
 
-	if ((clk%500) == 0) cap_flag = 1; 		//50ms
+	if ((clk%50) == 0) //500
+	{
+		cap_flag = 1; 		//50ms
+		printf("clk: %d\n",clk);
+	}	
 //	printf("%d\n",clk);
 }
 
@@ -120,7 +129,7 @@ int main()
 	//--------------------------
 	//config timer
 	//--------------------------
-	de_cfbean.config_timer_us(1000); 		//100us
+	de_cfbean.config_timer_us(10000); 		//100us
 	de_cfbean.enable_timer();		
 	
 //	cf_Uart.Uart2kit(1000,11);
@@ -130,15 +139,14 @@ int main()
 	{
 		if(cap_flag == 1)
 		{
-			cf_Uart.Uart2kit(time_test++,11);
+			cf_Uart.Uart2kit(clk+(time_test++),5);
 			cap_flag = 0;
-			printf("here==========================");
+		
 		}
-		printf("%d \n",cap_flag);
-
+		
+	
 	}
 
 	return 0;
-
 
 }
