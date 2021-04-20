@@ -19,7 +19,7 @@
 #include <stdio.h>
 #include "Coffee_bean.hpp"
 #include "uart.h"
-
+#include <time.h>
 
 
 //=============================================== global
@@ -67,6 +67,8 @@ void timer_handler(int)
 int main()
 {
 
+	clock_t start_time=0,end_time=0;
+	uint8 	loop=0;
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
     	//------------------------ 
 	uint16          result[500][4];                     // store results after processing 
@@ -103,16 +105,30 @@ int main()
 
 	uint16 r,c;
 
- /*    	
-    	PATH		    path_re =	"img_processing_library/Sample_txt/RGB_Red1.txt";
-    	PATH		    path_gr =	"img_processing_library/Sample_txt/RGB_Green1.txt";
-    	PATH		    path_bl =	"img_processing_library/Sample_txt/RGB_Blue1.txt";
+     	
+    	PATH		    path_re =	"src/img_processing_library/Sample_txt/RGB_Red1.txt";
+    	PATH		    path_gr =	"src/img_processing_library/Sample_txt/RGB_Green1.txt";
+    	PATH		    path_bl =	"src/img_processing_library/Sample_txt/RGB_Blue1.txt";
 
     	//------------------------ Background
-    	PATH            path_re_bgr = "img_processing_library/Sample_txt/background_red.txt";
-    	PATH            path_gr_bgr = "img_processing_library/Sample_txt/background_green.txt";
-    	PATH            path_bl_bgr = "img_processing_library/Sample_txt/background_blue.txt";
-*/
+    	PATH            path_re_bgr = "src/img_processing_library/Sample_txt/background_red.txt";
+    	PATH            path_gr_bgr = "src/img_processing_library/Sample_txt/background_green.txt";
+    	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
+
+	
+	if (img_pro_cfbean.read_txtIMG(re_bgr, gr_bgr, bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
+        	printf("Reading background successfull\n");
+    	else
+    	{
+        	printf("Reading background failed, please check again! Thanks\n");
+        	exit(0);
+    	}
+	
+	
+	
+	
+	
+	/*
 	
 	//--------------------------
 	//set up camera
@@ -143,10 +159,10 @@ int main()
 	
 //	cf_Uart.Uart2kit(1000,11);
 
-
+*/
 	while(1)
 	{
-		if(cap_flag == 1)
+/*		if(cap_flag == 1)
 		{
 			cap_flag=0;
 			cap.read(frame);		//get image from camera directly
@@ -163,16 +179,39 @@ int main()
 				}
 			}
 			
+*/
+	
+		start_time = 0;
+		end_time   = 0;
+
+		
+		start_time = clock();
+		if(img_pro_cfbean.read_txtIMG(Img_re, Img_gr, Img_bl, path_re, path_gr,path_bl) == _OK_)
+		{	
+				end_time = clock();
 
 			img_pro_cfbean.Sub_image(Img_re, Img_gr, Img_bl, re_bgr, gr_bgr, bl_bgr, 40);
-        		alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
-        		img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
-        		alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+        			
 			
+			alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
+        	
+			
+				
+			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
+        	
+			alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+		
+		}	
+
+		
+			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
+		printf("time = %4f \n",seconds);
+		if (loop++ == 200) break;
+
 			//=========================Using to transfer to Uart
 //			cf_Uart.Uart2kit(clk+(time_test++),5);
 		
-		}
+//		}
 		
 	
 	}

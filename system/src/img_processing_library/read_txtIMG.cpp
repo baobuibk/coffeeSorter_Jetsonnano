@@ -10,45 +10,45 @@
 * Last Modify: 23/2/2021
 *///=======================================================
 #include "img_processing.h"
-#include "stdio.h"
+#include <stdio.h>
 
 
 //=============================================================== 1. READ TXT IMAGE RGB
 uint8 img_pro::read_txtIMG(	Matrix &Img_re,
-							Matrix &Img_gr,
-							Matrix &Img_bl,
-							PATH   &Path_re,
-							PATH   &Path_gr,
-							PATH   &Path_bl
-						    )
+				Matrix &Img_gr,
+				Matrix &Img_bl,
+				PATH   &Path_re,
+				PATH   &Path_gr,
+				PATH   &Path_bl)
 {
 	uint16	i, j;
 	dbfl	value1,value2,value3;
 	FILE	*file1, *file2, *file3;
-	errno_t err1, err2, err3;
+//	errno_t err1, err2, err3;     // this one is only used on Windown
 
-	err1 = fopen_s(&file1, Path_re, "r");
-	err2 = fopen_s(&file2, Path_gr, "r");
-	err3 = fopen_s(&file3, Path_bl, "r");
+	file1 = fopen(Path_re, "r");
+	file2 = fopen(Path_gr, "r");
+	file3 = fopen(Path_bl, "r");
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	if ((file1 == (FILE*)NULL) || err1 != 0)
+	if (file1 == (FILE*)NULL)
 	{
-		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 1 is not valid, please check again!");
-		_fcloseall();
+		printf("Open file at read_txtIMG(...) fail, Path 1 is not valid, please check again!\n");
+		fcloseall();
+
 		return _ERROR_;
 	}
-	else if (file2 == (FILE*)NULL || err2 != 0)
+	else if (file2 == (FILE*)NULL)
 	{
-		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 2 is not valid, please check again!");
-		_fcloseall();
+		printf("Open file at read_txtIMG(...) fail, Path 2 is not valid, please check again!\n");
+		fcloseall();
 		return _ERROR_;
 	}
-	else if (file3 == (FILE*)NULL || err3 != 0)
+	else if (file3 == (FILE*)NULL)
 	{
-		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 3 is not valid, please check again!!");
-		_fcloseall();
+		printf("Open file at read_txtIMG(...) fail, Path 3 is not valid, please check again!\n");
+		fcloseall();
 		return _ERROR_;
 	}
 	else
@@ -58,19 +58,19 @@ uint8 img_pro::read_txtIMG(	Matrix &Img_re,
 			for (j = 0; j < COL; j++)
 			{
 				//--------------------------//
-				fscanf_s(file1, "%f", &value1);
+				fscanf(file1, "%f", &value1);
 				Img_re.set(i,j) = (uint8)value1;
 
-				fscanf_s(file2, "%f", &value2);
+				fscanf(file2, "%f", &value2);
 				Img_gr.set(i, j) = (uint8)value2;
 
-				fscanf_s(file3, "%f", &value3);
+				fscanf(file3, "%f", &value3);
 				Img_bl.set(i, j) = (uint8)value3;
 
 				//--------------------------//
 			}
 		}
-		_fcloseall();
+		fcloseall();
 		return _OK_;
 	}
 	
@@ -86,17 +86,17 @@ uint8 img_pro::read_txtIMG(Matrix &IMG_gray, PATH &path_gray)
 	uint16 	i, j;
 	dbfl 	value;
 	FILE    *file;
-	errno_t err;
+//	errno_t err;
 	
 
-	err = fopen_s(&file, path_gray, "r");
+	file = fopen(path_gray, "r");
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	if ((file == (FILE*)NULL) || err != 0)
+	if ((file == (FILE*)NULL))
 	{
 		printf("Open file at read_txtIMG(Matrix &IMG_gray) fail, please check again!");
-		_fcloseall();
+		fcloseall();
 		return _ERROR_;
 	}
 	else
@@ -106,13 +106,13 @@ uint8 img_pro::read_txtIMG(Matrix &IMG_gray, PATH &path_gray)
 			for (j = 0; j < COL; j++)
 			{
 				//--------------------------
-				fscanf_s(file, "%f", &value);
+				fscanf(file, "%f", &value);
 				IMG_gray.set(i,j) = (uint8)value;
 
 				//--------------------------
 			}
 		}
-		_fcloseall();
+		fcloseall();
 		return _OK_;
 	}
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -125,17 +125,17 @@ uint8 img_pro::read_txtIMG(Matrix16& IMG_gray, PATH& path_gray)
 	uint16 	i, j;
 	dbfl 	value;
 	FILE* file;
-	errno_t err;
+//	errno_t err;
 
 
-	err = fopen_s(&file, path_gray, "r");
+	file = fopen(path_gray, "r");
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
-	if ((file == (FILE*)NULL) || err != 0)
+	if ((file == (FILE*)NULL))
 	{
 		printf("Open file at read_txtIMG(Matrix &IMG_gray) fail, please check again!");
-		_fcloseall();
+		fcloseall();
 		return _ERROR_;
 	}
 	else
@@ -145,13 +145,13 @@ uint8 img_pro::read_txtIMG(Matrix16& IMG_gray, PATH& path_gray)
 			for (j = 0; j < COL; j++)
 			{
 				//--------------------------
-				fscanf_s(file, "%f", &value);
+				fscanf(file, "%f", &value);
 				IMG_gray.set(i, j) = (uint16)value;
 
 				//--------------------------
 			}
 		}
-		_fcloseall();
+		fcloseall();
 		return _OK_;
 	}
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
@@ -164,16 +164,16 @@ uint8 img_pro::read_txtIMG(dbfl IMG[ROW][COL])
 	dbfl 	value;
 
 	FILE* file1;
-	errno_t err;
+//	errno_t err;
 
-	err = fopen_s(&file1, "D:/B. WORK/LAB/COFFEE _BEAN IMAGE PROCESSING/Text_value/Gray.txt", "r");
+	file1 = fopen("D:/B. WORK/LAB/COFFEE _BEAN IMAGE PROCESSING/Text_value/Gray.txt", "r");
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 	if (file1 == (FILE*)NULL)
 	{
 		printf("matrix gray error!");
-		_fcloseall();
+		fcloseall();
 		return _ERROR_;
 	}
 	else
@@ -183,13 +183,13 @@ uint8 img_pro::read_txtIMG(dbfl IMG[ROW][COL])
 			for (j = 0; j < COL; j++)
 			{
 				//--------------------------
-				fscanf_s(file1, "%f", &value);
+				fscanf(file1, "%f", &value);
 				IMG[i][j] = value;
 
 				//--------------------------
 			}
 		}
-		_fcloseall();
+		fcloseall();
 		return _OK_;
 	}
 }

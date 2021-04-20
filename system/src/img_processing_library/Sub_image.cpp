@@ -1,5 +1,5 @@
 #include "img_processing.h"
-#include <Stdio.h>
+#include <stdio.h>
 
 
 

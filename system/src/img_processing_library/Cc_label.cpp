@@ -14,7 +14,7 @@
 //  Output: img: this value is the binary input, it also contains the label of
 //			output
 //=========================================================================%
-#include "img_processing.hpp"
+#include "img_processing.h"
 
 //uint16  IMG_label[ROW][COL];
 uint16 img_pro::Cc_label(Matrix &img,Matrix16 &Img_label, uint8 cut_bd)    //adjust the output later, change to uint16 at img_label

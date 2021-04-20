@@ -22,8 +22,8 @@
 #define _SAME_			0
 #define _DIFF_			1
 
-#define FLOAT    		0
-#define NEGATIVE_FLOAT 	1
+//#define _FLOAT_    		0
+//#define _NEGATIVE_FLOAT_ 	1
 
 #define BLACK			0
 #define WHITE			1
@@ -48,7 +48,7 @@
 
 
 
-//extern uint8 		M[ROW][COL];
+extern uint8 		M[ROW][COL];
 
 //========================================== Matrix CLASS 
 class Matrix

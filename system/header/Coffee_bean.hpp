@@ -9,7 +9,7 @@
 #define COFFEE_HEADER
 
 #include "type.h"
-#include "img_processing.hpp"
+#include "img_processing.h"
 #include "external_devices.hpp"
 //==================================// DEFINE
 #define ADD_BINARY_THR	-17

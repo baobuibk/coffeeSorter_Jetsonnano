@@ -54,8 +54,8 @@ void 	img_pro::thin_step2_cd2(Matrix &img)
 				//========================== Checking the neighboor of three above neighbor
 				if (checkI == 3)
 				{
-					if (i == 400 && j == 80)
-						uint8 a = 0;
+					//if (i == 400 && j == 80)
+					//	uint8 a = 0;
 					for (k = 0; k < 3; k++)
 					{
 						checknei = 0;
