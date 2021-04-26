@@ -3,7 +3,7 @@
 
 
 
-//============================================================================== OK
+//============================================================================== Using own Matrix
 void img_pro::Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 							Matrix& re_bgr, Matrix& gr_bgr, Matrix& bl_bgr, uint8 ADJUST)
 {
@@ -28,6 +28,37 @@ void img_pro::Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 			if (tem_bl > 255)		Img_bl.set(i, j) = 255;
 			else if (tem_bl < 0)	Img_bl.set(i, j) = 0;
 			else					Img_bl.set(i, j) = (uint8)tem_bl;
+		}
+	}
+}
+
+
+//============================================================================== Using Mat openCV
+void img_pro::Sub_image(Mat& img_re, Mat& img_gr, Mat& img_bl,
+						Mat& re_bgr, Mat& gr_bgr, Mat& bl_bgr, uint8 ADJUST)
+{
+
+	uint16	i, j;
+	int16  tem_re, tem_gr, tem_bl;
+	for (i = 0; i < ROW; i++)
+	{
+		for (j = 0; j < COL; j++)
+		{
+			tem_re = (img_re.at<uchar>(i, j) + ADJUST) - re_bgr.at<uchar>(i, j);
+			tem_gr = (img_gr.at<uchar>(i, j) + ADJUST) - gr_bgr.at<uchar>(i, j);
+			tem_bl = (img_bl.at<uchar>(i, j) + ADJUST) - bl_bgr.at<uchar>(i, j);
+
+			if (tem_re > 255)		img_re.at<uchar>(i, j) = 255;
+			else if (tem_re < 0)	img_re.at<uchar>(i, j) = 0;
+			else					img_re.at<uchar>(i, j) = (uint8)tem_re;
+
+			if (tem_gr > 255)		img_gr.at<uchar>(i, j) = 255;
+			else if (tem_gr < 0)	img_gr.at<uchar>(i, j) = 0;
+			else					img_gr.at<uchar>(i, j) = (uint8)tem_gr;
+
+			if (tem_bl > 255)		img_bl.at<uchar>(i, j) = 255;
+			else if (tem_bl < 0)	img_bl.at<uchar>(i, j) = 0;
+			else					img_bl.at<uchar>(i, j) = (uint8)tem_bl;
 		}
 	}
 }

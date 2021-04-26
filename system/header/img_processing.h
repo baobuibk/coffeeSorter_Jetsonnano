@@ -12,6 +12,12 @@
 //#include "Gaussian_table.h"
 #include <iostream>
 #include <stdlib.h> 
+#include <opencv2/opencv.hpp>
+using cv::Mat;
+using cv::Vec3b;
+
+
+
 
 #define ROW				480
 #define COL				640
@@ -75,18 +81,18 @@ public:
 	~Matrix() { delete[] array; }
 
 	//----------------------------   Use to get value of Matrix
-	uint8 at(int pos_row, int pos_col)
+	inline uint8 at(int pos_row, int pos_col)
 	{
 		return array[index(pos_row, pos_col)];
 	}
 	//---------------------------- Be used to set value for Matrix
-	uint8 &set(int pos_row, int pos_col)
+	inline uint8 &set(int pos_row, int pos_col)
 	{
 		return array[index(pos_row, pos_col)];
 	}
 
 protected:
-	uint32 index(int pos_row, int pos_col)
+	inline uint32 index(int pos_row, int pos_col)
 	{
 		return pos_col + col * pos_row;
 	}
@@ -195,6 +201,12 @@ public:
 	uint8	read_txtIMG(Matrix &IMG_gray, PATH &path_gray);
 	uint8   read_txtIMG(Matrix16& IMG_gray, PATH& path_gray);
 	uint8	read_txtIMG(dbfl IMG[ROW][COL]);
+	uint8	read_txtIMG(Mat& img_re,
+						Mat& img_gr,
+						Mat& img_bl,
+						PATH& Path_re,
+						PATH& Path_gr,
+						PATH& Path_bl);
 
 	uint32	compare_2matrix(Matrix& img_ori);
 	uint32  compare_2matrix(Matrix16& img_ori);
@@ -207,6 +219,10 @@ public:
 
 	void Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 					Matrix& re_bgr, Matrix& gr_bgr, Matrix& bl_bgr, uint8 ADJUST);
+					
+	void Sub_image(	Mat& img_re, Mat& img_gr, Mat& img_bl,
+					Mat& re_bgr, Mat& gr_bgr, Mat& bl_bgr, uint8 ADJUST);
+					
 	void Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 					Matrix& re_bgr, Matrix& gr_bgr, Matrix& bl_bgr,
 					Matrix& out_re, Matrix& out_gr, Matrix& out_bl, uint8 ADJUST);

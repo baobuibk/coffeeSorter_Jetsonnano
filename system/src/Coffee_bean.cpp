@@ -66,6 +66,16 @@ void timer_handler(int)
 
 int main()
 {
+	
+	
+	
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare for OpenCV
+	Mat             img_re(ROW, COL, CV_8UC1);
+	Mat             img_gr(ROW, COL, CV_8UC1);
+	Mat             img_bl(ROW, COL, CV_8UC1);
+	Mat             img_re_bgr(ROW, COL, CV_8UC1);
+	Mat             img_gr_bgr(ROW, COL, CV_8UC1);
+	Mat             img_bl_bgr(ROW, COL, CV_8UC1);
 
 	clock_t start_time=0,end_time=0;
 	uint8 	loop=0;
@@ -116,7 +126,7 @@ int main()
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
 	
-	if (img_pro_cfbean.read_txtIMG(re_bgr, gr_bgr, bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
+	if (img_pro_cfbean.read_txtIMG(img_re_bgr, img_gr_bgr, img_bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
         	printf("Reading background successfull\n");
     	else
     	{
@@ -185,22 +195,18 @@ int main()
 		end_time   = 0;
 
 		
-		start_time = clock();
-		if(img_pro_cfbean.read_txtIMG(Img_re, Img_gr, Img_bl, path_re, path_gr,path_bl) == _OK_)
+			if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
 		{	
-				end_time = clock();
+			start_time = clock();
+			img_pro_cfbean.Sub_image(img_re, img_gr, img_bl, img_re_bgr, img_gr_bgr, img_bl_bgr, 40);	
+			end_time = clock();
 
-			img_pro_cfbean.Sub_image(Img_re, Img_gr, Img_bl, re_bgr, gr_bgr, bl_bgr, 40);
-        			
-			
 			alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
-        	
-			
-				
+        		
 			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
-        	
+        		
 			alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
-		
+			
 		}	
 
 		
