@@ -67,28 +67,35 @@ void timer_handler(int)
 int main()
 {
 	
-	
-	
+	_Matrix_    img_re1(ROW,COL);
+    	_Matrix_    img_gr1(ROW, COL);
+    	_Matrix_    img_bl1(ROW, COL);
+	_Matrix_    re_bgr1(ROW, COL);
+    	_Matrix_    gr_bgr1(ROW, COL);
+    	_Matrix_    bl_bgr1(ROW, COL);
+
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare for OpenCV
-	Mat             img_re(ROW, COL, CV_8UC1);
-	Mat             img_gr(ROW, COL, CV_8UC1);
-	Mat             img_bl(ROW, COL, CV_8UC1);
-	Mat             img_re_bgr(ROW, COL, CV_8UC1);
-	Mat             img_gr_bgr(ROW, COL, CV_8UC1);
-	Mat             img_bl_bgr(ROW, COL, CV_8UC1);
+	Mat             img_re2(ROW, COL, CV_8UC1);
+	Mat             img_gr2(ROW, COL, CV_8UC1);
+	Mat             img_bl2(ROW, COL, CV_8UC1);
+	Mat             re_bgr2(ROW, COL, CV_8UC1);
+	Mat             gr_bgr2(ROW, COL, CV_8UC1);
+	Mat             bl_bgr2(ROW, COL, CV_8UC1);
+
 
 	clock_t start_time=0,end_time=0;
 	uint8 	loop=0;
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
     	//------------------------ 
 	uint16          result[500][4];                     // store results after processing 
+
 	Matrix          re_bgr;                             // red background
 	Matrix          gr_bgr;                             // green background
 	Matrix          bl_bgr;                             // blue background
 
-	Matrix		Img_re;                             // Red channel
-	Matrix	    	Img_gr;                             // Green channel
- 	Matrix	    	Img_bl;                             // Blue channel
+	Matrix		img_re;                             // Red channel
+	Matrix	    	img_gr;                             // Green channel
+ 	Matrix	    	img_bl;                             // Blue channel
 
 	Matrix          Img_Bi;                             // Be used to store Binary image    
  	Matrix          Border_img;                         // Be used to store Border pixels
@@ -126,7 +133,7 @@ int main()
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
 	
-	if (img_pro_cfbean.read_txtIMG(img_re_bgr, img_gr_bgr, img_bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
+	if (img_pro_cfbean.read_txtIMG(re_bgr2, gr_bgr2, bl_bgr2, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
         	printf("Reading background successfull\n");
     	else
     	{
@@ -191,28 +198,29 @@ int main()
 			
 */
 	
-		start_time = 0;
-		end_time   = 0;
+//		start_time = 0;
+//		end_time   = 0;
 
 		
-			if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
+			if(img_pro_cfbean.read_txtIMG(img_re2, img_gr2, img_bl2, path_re, path_gr, path_bl) == _OK_)
 		{	
 			start_time = clock();
-			img_pro_cfbean.Sub_image(img_re, img_gr, img_bl, img_re_bgr, img_gr_bgr, img_bl_bgr, 40);	
+
+			img_pro_cfbean.Sub_image(img_re2, img_gr2, img_bl2, re_bgr2, gr_bgr2, bl_bgr2, 40);	
 			end_time = clock();
 
-			alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
+	//		alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
+ 		       		
+	//		img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
         		
-			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
-        		
-			alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+	//		alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 			
 		}	
 
 		
 			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
 		printf("time = %4f \n",seconds);
-		if (loop++ == 200) break;
+		if (loop++ == 20) break;
 
 			//=========================Using to transfer to Uart
 //			cf_Uart.Uart2kit(clk+(time_test++),5);

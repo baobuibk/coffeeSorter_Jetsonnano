@@ -259,3 +259,66 @@ uint8 img_pro::read_txtIMG(	Mat& img_re,
 
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 }
+
+//=============================================================== 6. READ TXT IMAGE RGB USING CLASS OF MALLOC
+uint8 img_pro::read_txtIMG(	_Matrix_& Img_re,
+							_Matrix_& Img_gr,
+							_Matrix_& Img_bl,
+							PATH& Path_re,
+							PATH& Path_gr,
+							PATH& Path_bl)
+{
+	uint16	i, j;
+	dbfl	value1, value2, value3;
+	FILE* file1, * file2, * file3;
+//	errno_t err1, err2, err3;
+
+	file1 = fopen(Path_re, "r");
+	file2 = fopen(Path_gr, "r");
+	file3 = fopen(Path_bl, "r");
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+	if ((file1 == (FILE*)NULL))
+	{
+		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 1 is not valid, please check again!");
+		fcloseall();
+		return _ERROR_;
+	}
+	else if (file2 == (FILE*)NULL)
+	{
+		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 2 is not valid, please check again!");
+		fcloseall();
+		return _ERROR_;
+	}
+	else if (file3 == (FILE*)NULL)
+	{
+		printf("Open file at read_txtIMG(uint8 IMG_1[ROW][COL], ...) fail, Path 3 is not valid, please check again!!");
+		fcloseall();
+		return _ERROR_;
+	}
+	else
+	{
+		for (i = 0; i < ROW; i++)
+		{
+			for (j = 0; j < COL; j++)
+			{
+				//--------------------------//
+				fscanf(file1, "%f", &value1);
+				Img_re.val[i][j] = (uint8)value1;
+
+				fscanf(file2, "%f", &value2);
+				Img_gr.val[i][j] = (uint8)value2;
+
+				fscanf(file3, "%f", &value3);
+				Img_bl.val[i][j] = (uint8)value3;
+
+				//--------------------------//
+			}
+		}
+		fcloseall();
+		return _OK_;
+	}
+
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+}

@@ -8,6 +8,9 @@
 #ifndef IMAGE_HEADER
 #define IMAGE_HEADER
 
+
+
+#include "Matrix.h"
 #include "type.h"
 //#include "Gaussian_table.h"
 #include <iostream>
@@ -207,6 +210,13 @@ public:
 						PATH& Path_re,
 						PATH& Path_gr,
 						PATH& Path_bl);
+						
+	uint8	read_txtIMG(_Matrix_& Img_re,
+						_Matrix_& Img_gr,
+						_Matrix_& Img_bl,
+						PATH& Path_re,
+						PATH& Path_gr,
+						PATH& Path_bl);
 
 	uint32	compare_2matrix(Matrix& img_ori);
 	uint32  compare_2matrix(Matrix16& img_ori);
@@ -219,7 +229,7 @@ public:
 
 	void Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 					Matrix& re_bgr, Matrix& gr_bgr, Matrix& bl_bgr, uint8 ADJUST);
-					
+				
 	void Sub_image(	Mat& img_re, Mat& img_gr, Mat& img_bl,
 					Mat& re_bgr, Mat& gr_bgr, Mat& bl_bgr, uint8 ADJUST);
 					
@@ -229,6 +239,9 @@ public:
 	void Sub_image(	Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl,
 					Matrix& re_bgr, Matrix& gr_bgr, Matrix& bl_bgr,
 					Matrix& out_re, Matrix& out_gr, Matrix& out_bl);
+					
+	void Sub_image(	_Matrix_& Img_re, _Matrix_& Img_gr, _Matrix_& Img_bl,
+					_Matrix_& re_bgr, _Matrix_& gr_bgr, _Matrix_& bl_bgr, uint8 ADJUST);
 
 	uint8 get_automatic_thres_Otsu(Matrix& img);
 	void  Gaussian_filter(Matrix& img, uint8 size_kernel, dbfl sigma);
