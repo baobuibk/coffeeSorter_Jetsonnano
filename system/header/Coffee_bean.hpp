@@ -46,7 +46,12 @@
 class Algorithm_Cfbean
 {
 public:
-	uint8 Coffee_Segmentation(Matrix& Img_re, Matrix& Img_gr, Matrix& Img_bl, Matrix& Img_Bi, img_pro &img_pro_cfbean);
+	uint8 Coffee_Segmentation(	Matrix& Img_re, 
+								Matrix& Img_gr, 
+								Matrix& Img_bl, 
+								Matrix& Img_Bi, 
+								img_pro &img_pro_cfbean,
+								Matrix16& Img_lbl);
 	
 	uint8 features_evaluation(	Matrix		&Img_seg, 
 					Matrix16	&img_label, 

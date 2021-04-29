@@ -41,7 +41,8 @@ OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o\
 			       	eliminate_noise_line.o get_automatic_thres_Otsu.o Sub_image.o thining_algorithm.o\
 			       	thin_step2_cd1.o thin_step2.o Explore_border_single.o pre_evaluation.o\
 			       	thin_step1.o thin_step2_cd2.o Coffee_Segmentation.o features_evaluation.o\
-				evaluate_color.o check_roundness.o read_txtIMG.o)
+				evaluate_color.o check_roundness.o read_txtIMG.o remove_sm_obj.o\
+				invert_binary_img.o erosion_square2x2.o compare_2matrix.o)
 
 
 #--------------------------------------

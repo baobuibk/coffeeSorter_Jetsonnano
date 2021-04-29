@@ -25,7 +25,7 @@ uint32 img_pro::compare_2matrix(Matrix &img_ori)
 	uint32  num_diff = 0;
 	uint16 	i,j;
 //	img_pro *readtxt = new img_pro;
-	PATH	path_gray = "img_processing_library/Sample_txt/Gray.txt";
+	PATH	path_gray = "src/img_processing_library/Sample_txt/Gray.txt";
 
 	if (readtxt.read_txtIMG(IMG_txt, path_gray) == _ERROR_)
 	{
@@ -62,7 +62,7 @@ uint32 img_pro::compare_2matrix(Matrix16& img_ori)
 	uint32  num_diff = 0;
 	uint16 	i, j;
 	//	img_pro *readtxt = new img_pro;
-	PATH	path_gray = "img_processing_library/Sample_txt/Gray.txt";
+	PATH	path_gray = "src/img_processing_library/Sample_txt/Gray.txt";
 
 	if (readtxt.read_txtIMG(IMG_txt, path_gray) == _ERROR_)
 	{

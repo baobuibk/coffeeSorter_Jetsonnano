@@ -65,12 +65,14 @@ class Matrix
 private:
 	uint8* array;
 	uint16 col;
-
+	uint16 r,c;
 public:
 	
 	//---------------------------- Constructor
 	Matrix()
 	{
+		r = 0;
+		c = 0;
 		col = COL;            // number of colum of defaut image
 		array = new(std::nothrow) uint8[ROW * COL];
 		if (!array)
@@ -78,6 +80,16 @@ public:
 			std::cout << "Array allocation failed!\n";
 			exit(0);
 		}
+		
+		//-----------------initialize for matrix
+		for (r = 0; r < ROW; r++)
+		{
+			for (c = 0; c < COL; c++)
+			{
+				this->set(r, c) = 0;
+			}
+		}
+		//-----------------
 	};
 
 	//---------------------------- Deconstructor
@@ -243,6 +255,9 @@ public:
 	void Sub_image(	_Matrix_& Img_re, _Matrix_& Img_gr, _Matrix_& Img_bl,
 					_Matrix_& re_bgr, _Matrix_& gr_bgr, _Matrix_& bl_bgr, uint8 ADJUST);
 
+	uint8 erosion_square2x2(Matrix& img);
+	uint8 remove_sm_obj(Matrix& img, Matrix16& Img_lbl,uint16 Thr,uint8 cut_bd);
+
 	uint8 get_automatic_thres_Otsu(Matrix& img);
 	void  Gaussian_filter(Matrix& img, uint8 size_kernel, dbfl sigma);
 	uint16 Cc_label(Matrix& img, Matrix16& Img_label, uint8 cut_bd);
@@ -266,7 +281,7 @@ public:
 									uint16  y_cur,								// Input: the current y position 
 									uint16  arr_posi_obj[ROW_POSI_SINGLE][2]);	// Output: using to store position of pxls)	
 	
-
+	void invert_binary_img(Matrix& img);
 	
 };
 

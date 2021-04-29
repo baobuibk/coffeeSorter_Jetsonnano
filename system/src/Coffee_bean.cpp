@@ -67,6 +67,7 @@ void timer_handler(int)
 int main()
 {
 	
+/*	
 	_Matrix_    img_re1(ROW,COL);
     	_Matrix_    img_gr1(ROW, COL);
     	_Matrix_    img_bl1(ROW, COL);
@@ -81,7 +82,7 @@ int main()
 	Mat             re_bgr2(ROW, COL, CV_8UC1);
 	Mat             gr_bgr2(ROW, COL, CV_8UC1);
 	Mat             bl_bgr2(ROW, COL, CV_8UC1);
-
+*/
 
 	clock_t start_time=0,end_time=0;
 	uint8 	loop=0;
@@ -93,7 +94,7 @@ int main()
 	Matrix          gr_bgr;                             // green background
 	Matrix          bl_bgr;                             // blue background
 
-	Matrix		img_re;                             // Red channel
+	Matrix			img_re;                             // Red channel
 	Matrix	    	img_gr;                             // Green channel
  	Matrix	    	img_bl;                             // Blue channel
 
@@ -101,7 +102,7 @@ int main()
  	Matrix          Border_img;                         // Be used to store Border pixels
 
 	Matrix16        Img_label;
-    
+    Matrix16        Img_label_rm_smobj;
     
  	uint16          order_label[100];                   // Contain the order of obj after the processing 
 	uint16 	    	nb_object = 0;                      // Store the number of meaningful object
@@ -133,7 +134,7 @@ int main()
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
 	
-	if (img_pro_cfbean.read_txtIMG(re_bgr2, gr_bgr2, bl_bgr2, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
+	if (img_pro_cfbean.read_txtIMG(re_bgr, gr_bgr, bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
         	printf("Reading background successfull\n");
     	else
     	{
@@ -177,8 +178,8 @@ int main()
 //	cf_Uart.Uart2kit(1000,11);
 
 */
-	while(1)
-	{
+//	while(1)
+//	{
 /*		if(cap_flag == 1)
 		{
 			cap_flag=0;
@@ -202,25 +203,25 @@ int main()
 //		end_time   = 0;
 
 		
-			if(img_pro_cfbean.read_txtIMG(img_re2, img_gr2, img_bl2, path_re, path_gr, path_bl) == _OK_)
+			if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
 		{	
-			start_time = clock();
+			//start_time = clock();
 
-			img_pro_cfbean.Sub_image(img_re2, img_gr2, img_bl2, re_bgr2, gr_bgr2, bl_bgr2, 40);	
-			end_time = clock();
+			img_pro_cfbean.Sub_image(img_re, img_gr, img_bl, re_bgr, gr_bgr, bl_bgr, 40);	
+			//end_time = clock();
 
-	//		alg_cfbean.Coffee_Segmentation(Img_re, Img_gr, Img_bl, Img_Bi, img_pro_cfbean);
+			alg_cfbean.Coffee_Segmentation(img_re, img_gr, img_bl, Img_Bi, img_pro_cfbean, Img_label_rm_smobj);
  		       		
-	//		img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
+			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
         		
-	//		alg_cfbean.features_evaluation(Img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+			alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 			
 		}	
 
 		
-			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
-		printf("time = %4f \n",seconds);
-		if (loop++ == 20) break;
+			//float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
+			//printf("time = %4f \n",seconds);
+			//if (loop++ == 20) break;
 
 			//=========================Using to transfer to Uart
 //			cf_Uart.Uart2kit(clk+(time_test++),5);
@@ -228,7 +229,7 @@ int main()
 //		}
 		
 	
-	}
+//	}
 
 	return 0;
 

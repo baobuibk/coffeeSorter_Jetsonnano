@@ -19,11 +19,11 @@
 //uint16  IMG_label[ROW][COL];
 uint16 img_pro::Cc_label(Matrix &img,Matrix16 &Img_label, uint8 cut_bd)    //adjust the output later, change to uint16 at img_label
 {
-	uint16  same_lbst1[501];                           // same label in step 1, abandon index at '0'
+	uint16  same_lbst1[501];            // same label in step 1, abandon index at '0', (1->500) + 0 = 501
 	uint16 	label_now = 0, lb_min;
 	uint16 	i, j;
 	uint16  ii, tem;
-	uint8   same_lbst2[500];						   // same label in step 2
+	uint8   same_lbst2[501];						   // same label in step 2
 	uint16 	nei[4];									   // neighboor
 	uint8	label_real = 0;
 	uint8 	flag_overflow = _OFF_;
@@ -31,7 +31,13 @@ uint16 img_pro::Cc_label(Matrix &img,Matrix16 &Img_label, uint8 cut_bd)    //adj
 
 	//	Test_matrix(IMG,1);
 
-	for (ii = 0; ii < OV_LB; ii++)  same_lbst1[ii] = 0;
+	for (ii = 0; ii < OV_LB; ii++)
+	{
+		same_lbst1[ii] = 0;
+		same_lbst2[ii] = 0;
+	}
+
+
 	for (i = 0; i < ROW; i++)
 	{
 		for (j = 0; j < COL; j++) Img_label.set(i,j) = 0;
@@ -101,10 +107,11 @@ uint16 img_pro::Cc_label(Matrix &img,Matrix16 &Img_label, uint8 cut_bd)    //adj
 				}
 			}
 		}
+
 		//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-		for (i = 0; i < ROW; i++)
+		for (i = cut_bd; i < ROW - cut_bd; i++)
 		{
-			for (j = 0; j < COL; j++)
+			for (j = cut_bd; j < COL - cut_bd; j++)
 			{
 				//--------------------------------------------
 				if (Img_label.at(i,j) != BLACK)
@@ -112,10 +119,9 @@ uint16 img_pro::Cc_label(Matrix &img,Matrix16 &Img_label, uint8 cut_bd)    //adj
 				//--------------------------------------------
 			}
 		}
+
 		//		Test_matrix(IMG,1);
 		return label_real;
 	}
 	//=========================================================================
-
-
 }
