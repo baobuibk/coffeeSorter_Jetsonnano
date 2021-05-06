@@ -43,6 +43,8 @@ uint8 Algorithm_Cfbean::Coffee_Segmentation(Matrix&     Img_re,
         }
     }
 
+    img_pro_cfbean.rm_border_obj(Img_Bi, Img_lbl);
+
     //--------------------------------------
     //  eliminate small object and noise
     //--------------------------------------
@@ -55,9 +57,9 @@ uint8 Algorithm_Cfbean::Coffee_Segmentation(Matrix&     Img_re,
     
     img_pro_cfbean.invert_binary_img(Img_Bi);
     img_pro_cfbean.remove_sm_obj(Img_Bi, Img_lbl, 30,5);
-//    img_pro_cfbean.compare_2matrix(Img_Bi);
+ //   img_pro_cfbean.compare_2matrix(Img_Bi);
 
-//    img_pro_cfbean.compare_2matrix(Img_Bi);
+ //   img_pro_cfbean.compare_2matrix(Img_Bi);
 
 
 

@@ -264,9 +264,11 @@ public:
 	uint8 pre_evaluation(	Matrix& img_bi,								//input binary image with background 0 and foreground 1
 							Matrix16 &Img_label,
 							uint16& nb_object,							// number of objects
+							uint16& nb_obj_eva,							// number of meaningful objects
 							uint16  order_lable[100],					// contain the order of obj after the process
 							Matrix& Border_img,							// img_border);
-							uint16  arr_posi_obj[ROW_POSI_SINGLE][2]);
+							uint16  arr_posi_obj[ROW_POSI_SINGLE][2],
+							uint16  center_pxl[100][2]);
 							
 	void thining_algorithm(Matrix& img);
 	void eliminate_noise_line(	uint16		del_val,
@@ -275,13 +277,17 @@ public:
 								uint32		&x_coor_noise,
 								uint32		&y_coor_noise);
 
-	uint8 Explore_border_single(	Matrix& IMG_Bdlc,							//Input: image border local
-									uint32& ixd_arr_psobj,						// Input: Contain the current pointer of arr_posi_obj
-									uint16  x_cur,								// Input:the current x position 	
-									uint16  y_cur,								// Input: the current y position 
-									uint16  arr_posi_obj[ROW_POSI_SINGLE][2]);	// Output: using to store position of pxls)	
+	uint8 Explore_border_single(Matrix& IMG_Bdlc,							//Input: image border local
+								uint32& ixd_arr_psobj,						// Input: Contain the current pointer of arr_posi_obj
+								uint16  x_cur,								// Input:the current x position 	
+								uint16  y_cur,								// Input: the current y position 
+								uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// Output: using to store position of pxls)	
+								uint16	center_pxl[100][2],					// Output: contain the position of center pixel
+								uint32& center_row,						// Output: contain the temporary row center
+								uint32& center_col);			
 	
 	void invert_binary_img(Matrix& img);
+	uint8 rm_border_obj(Matrix& ImgBi, Matrix16 &Img_lbl);
 	
 };
 

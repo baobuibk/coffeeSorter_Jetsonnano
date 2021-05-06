@@ -23,12 +23,13 @@
 
 
 uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image with background 0 and foreground 1
-									Matrix16&Img_label,						// Using for store img_label
+									Matrix16&Img_label,							// Using for store img_label
 									uint16 	&nb_object,							// number of objects
+									uint16	&nb_obj_eva,						// number of meaningful objects
 									uint16  order_label[100],					// contain the order of obj after the process
 									Matrix  &Border_img,						// img_border
-									uint16  arr_posi_obj[ROW_POSI_SINGLE][2])	// contain position of pixels on object border )						
-									
+									uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// contain position of pixels on object border )						
+									uint16  center_pxl[100][2])
 {
 	uint32  row_coor_noise;     // store the center pixel of redundant object that will be deleted
 	uint32  col_coor_noise;     // store the center pixel of redundant object that will be deleted
@@ -39,10 +40,11 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 	int8    ii=0,jj=0;			// index
 	uint8 	TB_sum_neighbor=0,ERP_sum_neighbor=0; // Containing the sum of neighbor pixels
 	uint8	si_flag;			// flag that used for checking explore_border_single
-
-
+	uint32  center_row;			// contain the temporary row center
+	uint32	center_col;			// contain the temporary col center
+	
 	nb_object = Cc_label(img_bi, Img_label,5);              
-
+	nb_obj_eva = nb_object;
 //	printf("%d  %d", img_bi.at(79, 71), img_bi.at(104, 47));
 	//========================================================= THINNING BORDER
 	for (i=0;i<ROW;i++)
@@ -74,7 +76,6 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 	}
 	
 	thining_algorithm(Border_img);
-	
 	//========================================================= ELIMINATING RESIDUAL PIXELS
 	for (i=5;i<ROW-5;i++)
 	{
@@ -100,8 +101,12 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 					arr_posi_obj[ixd_arr_psobj++][1]		= 1;
 					arr_posi_obj[ixd_arr_psobj	][0]		= row_coor_noise;
 					arr_posi_obj[ixd_arr_psobj++][1]		= col_coor_noise;
-					order_label[idx_odlb++]					= cur_label;
-					nb_object--;
+					//-------------------------
+					center_pxl[idx_odlb][0]					= row_coor_noise;   //center point of broken lines are saved 
+					center_pxl[idx_odlb][1]					= col_coor_noise;	//center point of broken lines are saved 
+					order_label[idx_odlb++]					= cur_label;		// label order of broken lines are saved 
+					nb_obj_eva--;
+					//-------------------------
 				}
 				else continue;
                 //------------------------------------
@@ -122,9 +127,15 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 			if (Border_img.at(i,j) == WHITE)
 			{
 				cur_label	= Img_label.at(i, j);
-				si_flag		= Explore_border_single(Border_img, ixd_arr_psobj,i,j, arr_posi_obj);
+				center_row	= 0;
+				center_col	= 0;
+				si_flag		= Explore_border_single(Border_img, ixd_arr_psobj,i,j, arr_posi_obj, center_pxl, center_row, center_col);
 				if (si_flag == _OFF_)  
+				{ 
+					center_pxl[idx_odlb][0] = center_row;
+					center_pxl[idx_odlb][1] = center_col;
 					order_label[idx_odlb++] = cur_label;
+				}
 			}
 			//-----------------------------------------------
 		}

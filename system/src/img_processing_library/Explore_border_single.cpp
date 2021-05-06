@@ -26,9 +26,10 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 										uint32  &ixd_arr_psobj,						// Input: Contain the current pointer of arr_posi_obj
 										uint16  x_cur,								// Input:the current x position 	
 										uint16  y_cur,								// Input: the current y position 
-										uint16  arr_posi_obj[ROW_POSI_SINGLE][2])	// Output: using to store position of pxls)		
-			
-												
+										uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// Output: using to store position of pxls)		
+										uint16	center_pxl[100][2],					// Output: contain the center pixel of each obj organized in place of order_label
+										uint32  &center_row,						// Output: contain the temporary row center
+										uint32	&center_col)						// Output: contain the temporary col center		
 {
 	//=============================================================%
 	uint16  size_lsp = 1;										// size of local single position, index 0 stores the starting point
@@ -37,11 +38,9 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 	int8  	ii, jj;												// index for windowns size 3x3
 	uint8 	size_pos33 = 0;										// Using to check size of pos33
 
-
 	uint16  i;
 	
 	uint8 	flag_el;											// flag of exploring line
-	uint8 	check_border = 0;
 	
 	uint16 	x_next,y_next, original_x, original_y;
 	uint8   ERR_FLAG = _OFF_;
@@ -108,13 +107,7 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 			}
 			else
 			{
-				//--------------------------------- if object stand by image border
-				if ((x_cur == 5) || (x_cur == ROW-6) || (y_cur == 5) || (y_cur == COL - 6))
-					check_border +=1;
-
 				IMG_Bdlc.set(x_cur,y_cur) 	= BLACK;
-
-
 				//--------------------------------- Searching next point
 				for (ii=-1;ii<=1;ii++)
 				{
@@ -136,8 +129,6 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 					arr_posi_local[size_lsp 	][0] 		= x_next;
 					arr_posi_local[size_lsp++ 	][1] 		= y_next;
 					IMG_Bdlc.set(x_next,y_next) 			= BLACK;
-
-					if ((size_lsp <=100) || (check_border >=15))  ERR_FLAG = E_B_S_NOISE_OBJECT;
 				}
 			}
 		}
@@ -154,7 +145,12 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 		{
 			arr_posi_obj[ixd_arr_psobj	][0] = arr_posi_local[i][0];
 			arr_posi_obj[ixd_arr_psobj++][1] = arr_posi_local[i][1];
+			center_row	+= arr_posi_local[i][0];
+			center_col	+= arr_posi_local[i][1];
 		}
+
+		center_row /= size_lsp;
+		center_col /= size_lsp;
 
 		if (ixd_arr_psobj >= ROW_POSI_SINGLE)
 			ERR_FLAG 		= E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL;

@@ -88,6 +88,7 @@ int main()
 	uint8 	loop=0;
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= Declare
     	//------------------------ 
+	uint16          center_pxl[100][2];                 // contain the center of pxl
 	uint16          result[500][4];                     // store results after processing 
 
 	Matrix          re_bgr;                             // red background
@@ -105,7 +106,8 @@ int main()
     Matrix16        Img_label_rm_smobj;
     
  	uint16          order_label[100];                   // Contain the order of obj after the processing 
-	uint16 	    	nb_object = 0;                      // Store the number of meaningful object
+	uint16 		    nb_object = 0;                      // Store the number of entire objects, using to send all data to kit
+    uint16          nb_obj_eva = 0;                     // Store the number of meaningfull objects that is not broken or so on...
  
 	img_pro 	img_pro_cfbean;                     // Object for class imagpe processing library
 	Algorithm_Cfbean    alg_cfbean;                     // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
@@ -212,9 +214,16 @@ int main()
 
 			alg_cfbean.Coffee_Segmentation(img_re, img_gr, img_bl, Img_Bi, img_pro_cfbean, Img_label_rm_smobj);
  		       		
-			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, order_label, Border_img, arr_posi_obj);
+			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, nb_obj_eva, order_label, Border_img, arr_posi_obj, center_pxl);
         		
-			alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+//			alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
+			
+			
+			for (uint8 i = 0; i < nb_object; i++)
+			{ 
+				printf("%d \n", order_label[i]);
+				printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
+			}
 			
 		}	
 
