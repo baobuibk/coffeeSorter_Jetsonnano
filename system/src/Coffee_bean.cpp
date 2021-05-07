@@ -90,12 +90,14 @@ int main()
     	//------------------------ 
 	uint16          center_pxl[100][2];                 // contain the center of pxl
 	uint16          result[500][4];                     // store results after processing 
+	uint16 		time_send[100];
+	uint8		channel_send[100];
 
 	Matrix          re_bgr;                             // red background
 	Matrix          gr_bgr;                             // green background
 	Matrix          bl_bgr;                             // blue background
 
-	Matrix			img_re;                             // Red channel
+	Matrix		img_re;                             // Red channel
 	Matrix	    	img_gr;                             // Green channel
  	Matrix	    	img_bl;                             // Blue channel
 
@@ -103,11 +105,11 @@ int main()
  	Matrix          Border_img;                         // Be used to store Border pixels
 
 	Matrix16        Img_label;
-    Matrix16        Img_label_rm_smobj;
+	Matrix16        Img_label_rm_smobj;
     
  	uint16          order_label[100];                   // Contain the order of obj after the processing 
-	uint16 		    nb_object = 0;                      // Store the number of entire objects, using to send all data to kit
-    uint16          nb_obj_eva = 0;                     // Store the number of meaningfull objects that is not broken or so on...
+	uint16 		nb_object = 0;                      // Store the number of entire objects, using to send all data to kit
+	uint16          nb_obj_eva = 0;                     // Store the number of meaningfull objects that is not broken or so on...
  
 	img_pro 	img_pro_cfbean;                     // Object for class imagpe processing library
 	Algorithm_Cfbean    alg_cfbean;                     // Object is used for Algorithm class (Algorithm, Open_Camera, Hardware class)
@@ -148,8 +150,6 @@ int main()
 	
 	
 	
-	/*
-	
 	//--------------------------
 	//set up camera
 	//--------------------------
@@ -179,10 +179,12 @@ int main()
 	
 //	cf_Uart.Uart2kit(1000,11);
 
-*/
-//	while(1)
-//	{
-/*		if(cap_flag == 1)
+
+	while(1)
+	{
+//		start_time = 0;
+//		end_time   = 0;
+		if(cap_flag == 1)
 		{
 			cap_flag=0;
 			cap.read(frame);		//get image from camera directly
@@ -193,52 +195,60 @@ int main()
 				ptr = image.ptr<cv::Vec3b>(r);
 				for(c=0;c<COL;c++)
 				{
-				Img_re.set(r,c) = ptr[c][2];
-				Img_gr.set(r,c) = ptr[c][1];
-				Img_bl.set(r,c) = ptr[c][0];
+				img_re.set(r,c) = ptr[c][2];
+				img_gr.set(r,c) = ptr[c][1];
+				img_bl.set(r,c) = ptr[c][0];
 				}
 			}
 			
-*/
+
 	
 //		start_time = 0;
 //		end_time   = 0;
 
 		
 			if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
-		{	
-			//start_time = clock();
-
+			{	
+		
 			img_pro_cfbean.Sub_image(img_re, img_gr, img_bl, re_bgr, gr_bgr, bl_bgr, 40);	
-			//end_time = clock();
-
+			
 			alg_cfbean.Coffee_Segmentation(img_re, img_gr, img_bl, Img_Bi, img_pro_cfbean, Img_label_rm_smobj);
- 		       		
+ //			start_time = clock();
+
 			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, nb_obj_eva, order_label, Border_img, arr_posi_obj, center_pxl);
-        		
+   //     		end_time = clock();
+
 //			alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 			
 			
-			for (uint8 i = 0; i < nb_object; i++)
-			{ 
-				printf("%d \n", order_label[i]);
-				printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
-			}
+	//		for (uint8 i = 0; i < nb_object; i++)
+	//		{ 
+	//			printf("%d \n", order_label[i]);
+	//			printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
+	//		}
 			
-		}	
 
-		
-			//float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
-			//printf("time = %4f \n",seconds);
-			//if (loop++ == 20) break;
+			}	
 
+			
+		/*
+			float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC; 		
+			printf("time = %4f \n",seconds);
+			if (loop++ == 20) break;
+		*/
 			//=========================Using to transfer to Uart
-//			cf_Uart.Uart2kit(clk+(time_test++),5);
-		
-//		}
+			
+			de_cfbean.calculate_2kit(center_pxl,time_send,channel_send);
+			for (uint16 ii=0;ii<nb_object;ii++)
+			{
+				cf_Uart.Uart2kit(time_send[ii],channel_send[ii]);   //row 0 contains time, row 1 store channel
+	
+			}
+				
+		}
 		
 	
-//	}
+	}
 
 	return 0;
 

@@ -71,6 +71,12 @@ class external_devices
 		int enable_timer();
 		int disable_timer();
 	
+		//---------------------
+		//Determine position and time to send to Jetson
+		uint8 calculate_2kit(	uint16 center_pxl[100][2],
+                                      	uint16 time_send[100],
+                                      	uint8 channel_send[100]);
+
 
 		//---------------------
 		//Interrupt functions
