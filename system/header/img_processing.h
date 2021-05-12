@@ -22,8 +22,8 @@ using cv::Vec3b;
 
 
 
-#define ROW				480
-#define COL				640
+#define ROW			240	//480
+#define COL			320	//640
 
 #define _ERROR_			1
 #define _OK_			0
