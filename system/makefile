@@ -36,7 +36,7 @@ CFLAGS += -Iheader	# I stands for include header
 #	STORE THE OBJECT FILE
 #--------------------------------------
 OBJDIR 	:= bin
-OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o\
+OBJS	:= $(addprefix $(OBJDIR)/,process.o timer.o gpio.o open_camera.o\
        				afproto.o crc16.o uart.o Cc_label.o\
 			       	eliminate_noise_line.o get_automatic_thres_Otsu.o Sub_image.o thining_algorithm.o\
 			       	thin_step2_cd1.o thin_step2.o Explore_border_single.o pre_evaluation.o\
@@ -44,13 +44,13 @@ OBJS	:= $(addprefix $(OBJDIR)/,Coffee_bean.o timer.o gpio.o open_camera.o\
 				evaluate_color.o check_roundness.o read_txtIMG.o remove_sm_obj.o\
 				invert_binary_img.o erosion_square2x2.o compare_2matrix.o rm_border_obj.o\
 				calculate_2kit.o)
-
+#Coffee_bean.o
 
 #--------------------------------------
 #		RULE
 #--------------------------------------
 all: $(OBJS)
-	$(CC) -o all $(OBJS) $(LIBS)	#remember to place $(LIBS) behind $(OBJS)
+	$(CC) -o all $(OBJS) $(LIBS) -lpthread 	#remember to place $(LIBS) behind $(OBJS)
 
 
 $(OBJDIR)/%.o: %.cpp

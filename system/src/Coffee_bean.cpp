@@ -20,14 +20,13 @@
 #include "Coffee_bean.hpp"
 #include "uart.h"
 #include <time.h>
-
-
+#include <iostream> 
 //=============================================== global
 uint16    		arr_posi_obj[ROW_POSI_SINGLE][2];       // Contain positions of border pixels
 uint16 			gpio = GPIO_RST_TIMER;
 external_devices 	de_cfbean;			   	// declare variable for external_devices class	
 uint8	volatile 	cap_flag=0;
-uint16 			clk = 0;
+//uint16 			clk = 0;
 
 //===============================================
 // 	This function is used for timer interupt
@@ -36,7 +35,7 @@ uint16 			clk = 0;
 
 void timer_handler(int)
 {
-//	static uint16	clk=0;
+	static uint16	clk=0;
 	clk++;
 	//---------------------------
 	//rst if get 50000 clk
@@ -49,7 +48,7 @@ void timer_handler(int)
 	}
 	else	de_cfbean.gpio_set_value(gpio,1);
 
-	if ((clk%1000) == 0) // 0,05s->500 , 
+	if ((clk%10000) == 0) // 0,05s->500 , 
 	{
 		cap_flag = 1; 		//50ms
 //		printf("clk: %d\n",clk);
@@ -182,14 +181,15 @@ int main()
 
 	while(1)
 	{
+
+		
 //		start_time = 0;
 //		end_time   = 0;
 		if(cap_flag == 1)
 		{
 		//	start_time = clock();
-
 			cap_flag=0;
-			cap.read(frame);		//get image from camera directly
+/*			cap.read(frame);		//get image from camera directly
 			cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
 			
 			for (r=0;r<ROW;r++)
@@ -202,28 +202,31 @@ int main()
 				img_bl.set(r,c) = ptr[c][0];
 				}
 			}
-			
+*/			
 			
 	
 //		start_time = 0;
 //		end_time   = 0;
 
-		
-		//	if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
-		//	{	
+		/*
+			if(img_pro_cfbean.read_txtIMG(img_re, img_gr, img_bl, path_re, path_gr, path_bl) == _OK_)
+			{	
 			
 			img_pro_cfbean.Sub_image(img_re, img_gr, img_bl, re_bgr, gr_bgr, bl_bgr, 40);	
-			
 			
 			alg_cfbean.Coffee_Segmentation(img_re, img_gr, img_bl, Img_Bi, img_pro_cfbean, Img_label_rm_smobj);
  			
 			img_pro_cfbean.pre_evaluation(Img_Bi, Img_label, nb_object, nb_obj_eva, order_label, Border_img, arr_posi_obj, center_pxl);
-        	//	end_time = clock();
+        	*/
+			//
+		//	end_time = clock();
 
 //			alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 		
-			printf("%d \n", nb_object);	
-		/*	
+			printf("here  %d\n",loop++);
+			//std::cout<<nb_object<<"here"<<std::endl;	
+		//	}
+			/*	
 			for (uint8 i = 0; i < nb_object; i++)
 			{ 
 	//			printf("%d \n", order_label[i]);
@@ -249,7 +252,7 @@ int main()
 			}*/
 				
 		}
-		
+		//pause();
 	
 	}
 

@@ -30,8 +30,8 @@
 //==================================
 //DEFINE FOR GPIO
 
-#define COL_CAM 640			//size of the global camera
 #define ROW_CAM 480
+#define COL_CAM 640			//size of the global camera
 
 #define SYSFS_GPIO_DIR "/sys/class/gpio"
 #define POLL_TIMEOUT (3 * 1000) 	/* 3 seconds */

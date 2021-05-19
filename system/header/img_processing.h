@@ -43,8 +43,11 @@ using cv::Vec3b;
 #define _GOOD_			1
 #define _BAD_			0
 
-#define NO_OBJECT       0
+#define NO_OBJECT       	0
 #define OVER_FL_OBJ		500 
+
+#define MAX_REAL_OBJ    	100
+
 
 
 #define ROW_POSI_SINGLE 10000
@@ -261,12 +264,12 @@ public:
 	uint8 get_automatic_thres_Otsu(Matrix& img);
 	void  Gaussian_filter(Matrix& img, uint8 size_kernel, dbfl sigma);
 	uint16 Cc_label(Matrix& img, Matrix16& Img_label, uint8 cut_bd);
-	uint8 pre_evaluation(	Matrix& img_bi,								//input binary image with background 0 and foreground 1
+	uint8 pre_evaluation(	Matrix	&img_bi,								//input binary image with background 0 and foreground 1
 							Matrix16 &Img_label,
-							uint16& nb_object,							// number of objects
-							uint16& nb_obj_eva,							// number of meaningful objects
+							uint16	&nb_object,							// number of objects
+							uint16	&nb_obj_eva,							// number of meaningful objects
 							uint16  order_lable[100],					// contain the order of obj after the process
-							Matrix& Border_img,							// img_border);
+							Matrix	&Border_img,							// img_border);
 							uint16  arr_posi_obj[ROW_POSI_SINGLE][2],
 							uint16  center_pxl[100][2]);
 							
@@ -282,7 +285,7 @@ public:
 								uint16  x_cur,								// Input:the current x position 	
 								uint16  y_cur,								// Input: the current y position 
 								uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// Output: using to store position of pxls)	
-								uint16	center_pxl[100][2],					// Output: contain the position of center pixel
+								//uint16	center_pxl[100][2],					// Output: contain the position of center pixel
 								uint32& center_row,						// Output: contain the temporary row center
 								uint32& center_col);			
 	

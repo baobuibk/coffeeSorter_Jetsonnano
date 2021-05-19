@@ -27,7 +27,7 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 										uint16  x_cur,								// Input:the current x position 	
 										uint16  y_cur,								// Input: the current y position 
 										uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// Output: using to store position of pxls)		
-										uint16	center_pxl[100][2],					// Output: contain the center pixel of each obj organized in place of order_label
+								//		uint16	center_pxl[100][2],					// Output: contain the center pixel of each obj organized in place of order_label
 										uint32  &center_row,						// Output: contain the temporary row center
 										uint32	&center_col)						// Output: contain the temporary col center		
 {
@@ -43,7 +43,7 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 	uint8 	flag_el;											// flag of exploring line
 	
 	uint16 	x_next,y_next, original_x, original_y;
-	uint8   ERR_FLAG = _OFF_;
+	uint8   ERR_FLAG = _OFF_;									// using to control error of algorithm
 	
 
 
@@ -153,7 +153,10 @@ uint8 img_pro::Explore_border_single( 	Matrix  &IMG_Bdlc,							//Input: image b
 		center_col /= size_lsp;
 
 		if (ixd_arr_psobj >= ROW_POSI_SINGLE)
-			ERR_FLAG 		= E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL;
+		{
+			ERR_FLAG = E_B_S_OVERFLOW_SIZE_POS_SINGLE_LOCAL;
+			printf("single poisition is overflow!\n");
+		}
 	}
 
 //	Test_matrix_sub(IMG_Bdlc);

@@ -19,7 +19,7 @@
 //=========================================================
 
 #include "img_processing.h"
-#include "stdio.h"
+#include <stdio.h>
 
 
 uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image with background 0 and foreground 1
@@ -29,7 +29,7 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 									uint16  order_label[100],					// contain the order of obj after the process
 									Matrix  &Border_img,						// img_border
 									uint16  arr_posi_obj[ROW_POSI_SINGLE][2],	// contain position of pixels on object border )						
-									uint16  center_pxl[100][2])
+									uint16  center_pxl[MAX_REAL_OBJ][2])
 {
 	uint32  row_coor_noise;     // store the center pixel of redundant object that will be deleted
 	uint32  col_coor_noise;     // store the center pixel of redundant object that will be deleted
@@ -42,7 +42,8 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 	uint8	si_flag;			// flag that used for checking explore_border_single
 	uint32  center_row;			// contain the temporary row center
 	uint32	center_col;			// contain the temporary col center
-	
+	uint8	err_pre = _OFF_;
+
 	nb_object = Cc_label(img_bi, Img_label,5);              
 	nb_obj_eva = nb_object;
 //	printf("%d  %d", img_bi.at(79, 71), img_bi.at(104, 47));
@@ -107,6 +108,12 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 					order_label[idx_odlb++]					= cur_label;		// label order of broken lines are saved 
 					nb_obj_eva--;
 					//-------------------------
+					if ((idx_odlb >= MAX_REAL_OBJ)|| (ixd_arr_psobj>= ROW_POSI_SINGLE))
+					{
+						printf("Leak memory at idxodlb or ixd_arr_psobj!\n");
+						err_pre |= (idx_odlb >= MAX_REAL_OBJ)| (ixd_arr_psobj >= ROW_POSI_SINGLE);
+						return _ERROR_;
+					}
 				}
 				else continue;
                 //------------------------------------
@@ -129,15 +136,22 @@ uint8 	img_pro::pre_evaluation(	Matrix  &img_bi,							// input binary image wit
 				cur_label	= Img_label.at(i, j);
 				center_row	= 0;
 				center_col	= 0;
-				si_flag		= Explore_border_single(Border_img, ixd_arr_psobj,i,j, arr_posi_obj, center_pxl, center_row, center_col);
+				si_flag		= Explore_border_single(Border_img, ixd_arr_psobj,i,j, arr_posi_obj, center_row, center_col);
 				if (si_flag == _OFF_)  
 				{ 
 					center_pxl[idx_odlb][0] = center_row;
 					center_pxl[idx_odlb][1] = center_col;
 					order_label[idx_odlb++] = cur_label;
 				}
+
 			}
 			//-----------------------------------------------
+			if ((idx_odlb >= MAX_REAL_OBJ) || (ixd_arr_psobj >= ROW_POSI_SINGLE))
+			{
+				printf("Leak memory at idxodlb or ixd_arr_psobj!\n");
+				err_pre |= (idx_odlb >= MAX_REAL_OBJ) | (ixd_arr_psobj >= ROW_POSI_SINGLE);
+				return _ERROR_;
+			}
 		}
 	}
     return _OK_;
