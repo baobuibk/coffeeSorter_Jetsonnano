@@ -32,7 +32,7 @@ void timer_handler(int)
         }
         else    de_cfbean.gpio_set_value(gpio,1);
 
-        if ((clk%25000) == 0) // 0,05s->500 ,
+        if ((clk%10000) == 0) // 0,05s->500 ,
         {
                 cap_flag = 1;           //50ms
         }
@@ -77,40 +77,12 @@ void parent(void)
 		if(cap_flag ==1)
 		{
 			cap_flag = 0;
+			printf("Prepare to capture!\n");
 			if (sem_post(sem_id) < 0)
                 		printf("Parent   : [sem_post] Failed \n");
-			if (sem_wait(sem_id) <0)
-				printf("Parent  : [sem_wait] Failed \n");
-			std::cout<<"Send semaphore ok!"<<std::endl;
+			//std::cout<<"Send semaphore ok!"<<std::endl;
 		}
 	}
-	
-}
-
-
-//-------------------------------------CHILD
-void child(void)
-{
-	sem_t *sem_id = sem_open(semName, O_CREAT,0600,0);
-	if (sem_id == SEM_FAILED)
-	{
-		perror("Child   : [sem_open] Failed\n"); 
-		return;
-	}
-	
-	printf("Child Semaphore was opened ok!\n");
-
-	while(1)
-	{
-
-    		if (sem_wait(sem_id) < 0)
-        		printf("Child   : [sem_wait] Failed \n");
-
-		std::cout<<"Captured!"<<std::endl;
-		if (sem_post(sem_id) < 0)
-			printf("Child : [sem_post] Failded \n");
-	}
-	
 	
 	if (sem_close(sem_id) !=0)
 	{
@@ -123,7 +95,41 @@ void child(void)
 		printf("Child  : [sem_unlink] Failed\n"); 
 		return;
 	}
+}
 
+
+//-------------------------------------CHILD
+void child(void)
+{
+	int value;
+	sem_t *sem_id = sem_open(semName, O_CREAT,0600,0);
+	if (sem_id == SEM_FAILED)
+	{
+		perror("Child   : [sem_open] Failed\n"); 
+		return;
+	}
+	
+	printf("Child Semaphore was opened ok!\n");
+
+	while(1)
+	{
+		if (sem_getvalue(sem_id,&value) < 0)
+		{
+			printf("Error when get value\n");
+			return;
+		}
+		std::cout<<"Current semaphore: "<<value<<std::endl;
+ 
+		if (sem_wait(sem_id) < 0)
+        		printf("Child   : [sem_wait] Failed \n");
+
+		printf("Captured!\n");
+		
+
+	}
+	
+	
+	
 }
 
 //---------------------------------------MAIN FUNCTION
