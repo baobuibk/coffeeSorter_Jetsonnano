@@ -10,13 +10,31 @@
 #include "Coffee_bean.hpp"
 #include <iostream>
 
-const char *semName = "abc";
-uint8 volatile 		cap_flag = 0;
-external_devices 	de_cfbean;
-uint16 			gpio = GPIO_RST_TIMER;		
+#define SIZE 10				// size of the test matrix
+
+
+//-------------- Variable for process
+const char *semName = "abc";            // Semaphore name used for synchronizing
 //sem_t *sem_id = sem_open(semName, O_CREAT,0600,0);
 
 
+
+
+//-------------- Variable for thread
+static pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;	//Initialize the value for mutex
+
+
+//-------------- Other
+uint8 volatile 		cap_flag = 0;			// Capture flag, be used to check the status of capture
+external_devices 	de_cfbean;
+uint16 			gpio = GPIO_RST_TIMER;		// reset pin	
+
+int 			matrix1[SIZE][SIZE];		// Using to test
+
+//===================================
+//     	TIMER HANDLER
+//
+//===================================
 void timer_handler(int)
 {
         static uint16   clk=0;
@@ -39,7 +57,12 @@ void timer_handler(int)
 }
 
 
-//------------------------------------PARENT
+//===================================
+//		PARENT
+//	USING TO CONTROL TIMER
+//
+//===================================
+
 void parent(void)
 {
 	struct sigaction sa;
@@ -77,7 +100,7 @@ void parent(void)
 		if(cap_flag ==1)
 		{
 			cap_flag = 0;
-			printf("Prepare to capture!\n");
+	//		printf("Prepare to capture!\n");
 			if (sem_post(sem_id) < 0)
                 		printf("Parent   : [sem_post] Failed \n");
 			//std::cout<<"Send semaphore ok!"<<std::endl;
@@ -98,38 +121,150 @@ void parent(void)
 }
 
 
-//-------------------------------------CHILD
-void child(void)
+
+
+//===================================
+//		THREAD 1
+//	USING TO WRITE VALUE INTO ARRAY
+//
+//===================================
+
+void *write_arr(void* arg)
 {
-	int value;
+        static int status = 0;
+	static uint8 count = 0;
+
+	//-------------------------- Open semaphore
+	// SEMAPHORE
+	//---------------
 	sem_t *sem_id = sem_open(semName, O_CREAT,0600,0);
+	
 	if (sem_id == SEM_FAILED)
 	{
 		perror("Child   : [sem_open] Failed\n"); 
-		return;
+		pthread_exit(0);
 	}
 	
 	printf("Child Semaphore was opened ok!\n");
 
-	while(1)
-	{
-		if (sem_getvalue(sem_id,&value) < 0)
+
+	while(true)
+        {
+		//----------------- Checking the current status of semaphore
+		if (sem_getvalue(sem_id,&status) < 0)
 		{
 			printf("Error when get value\n");
-			return;
+			//std::errExit("sem_getvalue");
+			exit(EXIT_FAILURE);
+
 		}
-		std::cout<<"Current semaphore: "<<value<<std::endl;
- 
+		std::cout<<"Current semaphore: "<<status<<std::endl;
+ 		
+		
+		//----------------- Wait and block untill recieving the unlock signal from parent process
 		if (sem_wait(sem_id) < 0)
         		printf("Child   : [sem_wait] Failed \n");
-
-		printf("Captured!\n");
 		
+		pthread_mutex_lock(&mtx);
+		printf("Captured!\n");
+                
+		for (uint8 ii=0;ii<SIZE;ii++)
+		{
+			for (uint8 jj=0;jj<SIZE;jj++)
+			{ 
+			 	matrix1[ii][jj] = count;
+			}
+		}
+                count++;
 
-	}
+                pthread_mutex_unlock(&mtx);
+
+        }
+ 	pthread_exit(0);
+//	return NULL;
+
+}
+
+
+
+
+		
+//===================================
+//		THREAD 2
+//	USING TO GET VALUE FROM ARRAY
+//
+//===================================
+
+
+void *get_arr(void* arg)
+{
+        int tem[SIZE][SIZE];
+        while (true)
+        {
+                pthread_mutex_lock(&mtx);
+
+                for (uint8 ii=0;ii<SIZE;ii++)
+                        for (uint8 jj=0;jj<SIZE;jj++)
+                                tem[ii][jj] = matrix1[ii][jj];
+
+                pthread_mutex_unlock(&mtx);
+                for (uint8 ii=0;ii<SIZE;ii++)
+                {
+                        for (uint8 jj=0;jj<SIZE;jj++)
+                        {
+                                printf("%d  ",tem[ii][jj]);
+                        }
+                        printf(" \n");
+                }
+
+        }
+        pthread_exit(0);
+}
+
+
+//===================================
+//		CHILD
+//	USING TO PROCESS IMAGE
+//       (CAPTURE AND PROCESS)
+//===================================
+
+void child(void)
+{
+
+	pthread_t t1,t2;		// Using to create 2 threads
+//	int value1;			// Be used to check the status of semaphore
+
+
+	//-------------------------- initialize the matrix
+	for (uint8 i=0;i<SIZE;i++)
+        {
+                for (uint8 j=0;j<SIZE;j++)
+                {
+                        matrix1[i][j] = 0;
+                }
+
+        }
+
+
+	//--------------------------- Create thread
+	// THREAD
+	//--------------
 	
-	
-	
+	if ( pthread_create(&t1,NULL,get_arr,NULL) != 0)
+		printf("pthread_create_fail!!");
+
+	if ( pthread_create(&t2,NULL,write_arr,NULL) != 0)
+		printf("pthread_create_fail!!");
+
+
+	if (pthread_join(t1, NULL) != 0)
+		printf("pthread_JOIN_fail!!");
+
+	if (pthread_join(t2, NULL) != 0)
+		printf("pthread_JOIN_fail!!");
+
+	exit(EXIT_SUCCESS);
+
 }
 
 //---------------------------------------MAIN FUNCTION
