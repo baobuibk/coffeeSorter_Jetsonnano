@@ -50,7 +50,7 @@ void timer_handler(int)
         }
         else    de_cfbean.gpio_set_value(gpio,1);
 
-        if ((clk%10000) == 0) // 0,05s->500 ,
+        if ((clk%500) == 0) // 0,05s->500 ,
         {
                 cap_flag = 1;           //50ms
         }
@@ -106,7 +106,7 @@ void parent(void)
 			//std::cout<<"Send semaphore ok!"<<std::endl;
 		}
 	}
-	
+
 	if (sem_close(sem_id) !=0)
 	{
 		perror("Child  : [sem_close] Failed\n"); 
@@ -145,7 +145,7 @@ void *write_arr(void* arg)
 		pthread_exit(0);
 	}
 	
-	printf("Child Semaphore was opened ok!\n");
+//	printf("Child Semaphore was opened ok!\n");
 
 
 	while(true)
