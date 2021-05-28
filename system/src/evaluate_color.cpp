@@ -11,9 +11,9 @@
 
 #include "Coffee_bean.hpp"
 uint8 Algorithm_Cfbean::evaluate_color(	Matrix&		Img_seg,
-										Matrix16&	img_label,
-										uint16		nb_object,
-										uint16		result_color[500][4])
+					Matrix16&	img_label,
+					uint16		nb_object,
+					uint16		result_color[500][4])
 {
 	//--------------------------------------------------------------------
 	uint32	num_pxl[500];				// store number of pixels of each object
