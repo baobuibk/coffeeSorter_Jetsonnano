@@ -70,7 +70,7 @@ void timer_handler(int)
         }
         else    de_cfbean.gpio_set_value(GPIO_RST_TIMER,1);
 
-        if ((clk%500) == 0) // 0,05s->500 ,
+        if ((clk%2500) == 0) // 0,05s->500 , 250-> 0.025 (40 frames per second)
         {
                 cap_flag = 1;           //50ms
         }
@@ -178,7 +178,33 @@ void *capture_img_thread(void* arg)
 
 	cv::VideoCapture    	cap;					// Using for capturing img
 	cv::Mat  		frame(ROW_CAM, COL_CAM, CV_8UC3);	// Using to store the image after captured
+	clock_t start_time = 0,  end_time = 0;
+	static uint16 count_frame = 0;
+
+
+	//--------------------------------------
+	// 	OPEN AND SET UP CAMERA
+	//--------------------------------------
 	
+	printf("Camera will open soon... \n");
+	cap.open(0 + cv::CAP_V4L2);
+	cap.set(cv::CAP_PROP_FOURCC,cv::VideoWriter::fourcc('M','J','P','G'));
+
+	cap.set(cv::CAP_PROP_FRAME_WIDTH, COL_CAM);	// set the resolution for camera. In this case, Column = 640
+	cap.set(cv::CAP_PROP_FRAME_HEIGHT,ROW_CAM); 	// Row = 480
+	
+	printf("Open camera ok!!!\n");
+
+
+
+	if (cap.isOpened()== true)  //check if we succeeded
+		printf("Camera was opened. Please wait ...\n");
+	else
+		printf("Get error when open camera\n");
+	
+	printf("loading...\n");
+	cv::waitKey(2000);				// waiting to open whole camera
+	printf("Ready to capture!");	
 
 	//--------------------------------------
 	// 	      OPEN SEMAPHORE
@@ -218,12 +244,23 @@ void *capture_img_thread(void* arg)
 		// and resizing image into image
 		// -------------------------------------
 		
+		
+//		start_time = clock();
+
 		pthread_mutex_lock(&mtx);	
 
 		cap.read(frame);	
 		cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
-
+		count_frame = (count_frame >= 50000)?0:count_frame+1;
                 pthread_mutex_unlock(&mtx);
+
+		printf("%d \n",count_frame);
+
+		// Measure timer
+//		end_time = clock();
+
+//		float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC;
+//		printf("time = %4f \n",seconds);
 
         }
  	pthread_exit(0);
@@ -253,10 +290,14 @@ void *img_processing_thread(void* arg)
 	Mat             img_re2(ROW, COL, CV_8UC1);
 	Mat             img_gr2(ROW, COL, CV_8UC1);
 	Mat             img_bl2(ROW, COL, CV_8UC1);
-	Mat             re_bgr2(ROW, COL, CV_8UC1);
-	Mat             gr_bgr2(ROW, COL, CV_8UC1);
-	Mat             bl_bgr2(ROW, COL, CV_8UC1);
-*/
+	*/
+	Mat             re_bgr_cv(ROW_CAM, COL_CAM, CV_8UC1);
+	Mat             gr_bgr_cv(ROW_CAM, COL_CAM, CV_8UC1);
+	Mat             bl_bgr_cv(ROW_CAM, COL_CAM, CV_8UC1);
+	
+	Mat             re_bgr_cv_rs(ROW, COL, CV_8UC1);
+	Mat             gr_bgr_cv_rs(ROW, COL, CV_8UC1);
+	Mat             bl_bgr_cv_rs(ROW, COL, CV_8UC1);
 
      	//--------------------------------------
 	//      	DECLARE
@@ -310,8 +351,27 @@ void *img_processing_thread(void* arg)
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
 	
-	if (img_pro_cfbean.read_txtIMG(re_bgr, gr_bgr, bl_bgr, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
-        	printf("Reading background successfull\n");
+	if (img_pro_cfbean.read_txtIMG(re_bgr_cv, gr_bgr_cv, bl_bgr_cv, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
+	{
+		cv::resize(re_bgr_cv,re_bgr_cv_rs,re_bgr_cv_rs.size(),0.5,0.5,cv::INTER_AREA);    //resize the image size
+		cv::resize(gr_bgr_cv,gr_bgr_cv_rs,re_bgr_cv_rs.size(),0.5,0.5,cv::INTER_AREA);    //resize the image size
+		cv::resize(bl_bgr_cv,bl_bgr_cv_rs,re_bgr_cv_rs.size(),0.5,0.5,cv::INTER_AREA);    //resize the image size
+		
+		for (r=0; r<ROW; r++)
+		{
+			for (c=0;c<COL;c++)
+			{
+				re_bgr.set(r,c) = re_bgr_cv_rs.at<uchar>(r,c);
+				gr_bgr.set(r,c) = gr_bgr_cv_rs.at<uchar>(r,c);
+				bl_bgr.set(r,c) = bl_bgr_cv_rs.at<uchar>(r,c);
+
+			}
+		}
+
+
+		printf("Reading background successfull\n");
+
+	}
     	else
     	{
         	printf("Reading background failed, please check again! Thanks\n");
