@@ -31,7 +31,6 @@
 #include <unistd.h>
 
 
-
 //-------------- Variable for process
 const char *semName = "abc";            // Semaphore name used for synchronizing
 
@@ -47,7 +46,8 @@ external_devices 	de_cfbean;			   	// declare variable for external_devices clas
 uint8	volatile 	cap_flag=0;
 
 cv::Mat  		image(ROW,COL,CV_8UC3);                 // Using to store image and exchange data bettwen 2 threads
-
+uint8 			buffer_2threads = 0;			// Using to check whether buffer is emply or full
+uint8 			global_arr[3600][320];
 
 
 
@@ -252,9 +252,11 @@ void *capture_img_thread(void* arg)
 		cap.read(frame);	
 		cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
 		count_frame = (count_frame >= 50000)?0:count_frame+1;
-                pthread_mutex_unlock(&mtx);
+                
+		buffer_2threads = _ON_;					// using for synchronizing 2 threads
+		pthread_mutex_unlock(&mtx);
 
-		printf("%d \n",count_frame);
+		printf("cap %d \n",count_frame);
 
 		// Measure timer
 //		end_time = clock();
@@ -350,6 +352,7 @@ void *img_processing_thread(void* arg)
     	PATH            path_gr_bgr = "src/img_processing_library/Sample_txt/background_green.txt";
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
+	PATH            path_bl_wr = "src/img_processing_library/Sample_txt/Gray.txt";
 	
 	if (img_pro_cfbean.read_txtIMG(re_bgr_cv, gr_bgr_cv, bl_bgr_cv, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
 	{
@@ -383,16 +386,36 @@ void *img_processing_thread(void* arg)
 	// 	   PROCESSING ALGORITHM
 	//
 	//--------------------------------------
+	static uint16 cur_row = 0;
+//	static uint16 cur_col = 0;
+
+
 	while (true)
         {
-
+		if (buffer_2threads == _ON_)				// If buffer was written, read it 
+		{
+			
 		//--------------------------------------
 		// 	Get data from general buffer   
 		//
 		//--------------------------------------
                 pthread_mutex_lock(&mtx);	//block 
 	        
-		for (r=0;r<ROW;r++)
+		for (r = cur_row; r< cur_row + ROW; r++)
+		{
+			ptr = image.ptr<cv::Vec3b>(r-cur_row);
+			for (c = 0; c < COL; c++)
+			{
+				global_arr[r][c] = ptr[c][0];
+
+			}
+		}
+
+		cur_row = r;
+
+				
+		
+		/*		for (r=0;r<ROW;r++)
 		{
 			ptr = image.ptr<cv::Vec3b>(r);
 			for(c=0;c<COL;c++)
@@ -402,10 +425,20 @@ void *img_processing_thread(void* arg)
 				img_bl.set(r,c) = ptr[c][0];
 			}
 		}
-		
+*/		
+		buffer_2threads = _OFF_;				// buffer was read, please write a new one
 		pthread_mutex_unlock(&mtx);	// unblock
+		}
+		
+		if (cur_row >= 3590)	
+		{
+			img_pro_cfbean.write_img2txt(global_arr,path_bl_wr);
+			break;
+		}
+		
 
 
+/*
 		//--------------------------------------
 		// 	Main algorithm   
 		//
@@ -430,7 +463,7 @@ void *img_processing_thread(void* arg)
 			printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
 		}
 
-		/*
+		
 		float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC;
 		printf("time = %4f \n",seconds);
 		*/

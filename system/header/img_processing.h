@@ -291,6 +291,14 @@ public:
 	
 	void invert_binary_img(Matrix& img);
 	uint8 rm_border_obj(Matrix& ImgBi, Matrix16 &Img_lbl);
+	uint8 write_img2txt(Matrix& img_re,
+						Matrix& img_gr,
+						Matrix& img_bl,
+						PATH& path_re,
+						PATH& path_gr,
+						PATH& path_bl);
+	uint8 write_img2txt(Matrix& img_gray, PATH& path_gray);
+	uint8 write_img2txt(uint8 img_gray[3600][320], PATH& path_gray);
 	
 };
 
