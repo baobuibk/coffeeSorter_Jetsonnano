@@ -63,14 +63,14 @@ void timer_handler(int)
         //rst if get 50000 clk
         //---------------------------
 
-        if (clk==50000)
+        if (clk==50000)		// reset after 5s
         {
                 clk = 0;
                 de_cfbean.gpio_set_value(GPIO_RST_TIMER,0);
         }
         else    de_cfbean.gpio_set_value(GPIO_RST_TIMER,1);
 
-        if ((clk%2500) == 0) // 0,05s->500 , 250-> 0.025 (40 frames per second)
+        if ((clk%250) == 0) 	// 0,05s->500 , 250-> 0.025 (40 frames per second)
         {
                 cap_flag = 1;           //50ms
         }
@@ -107,7 +107,7 @@ void parent(void)
 	//--------------------------------------	
 
 	de_cfbean.gpio_export(GPIO_RST_TIMER);          //enable to export gpio
-        de_cfbean.gpio_set_dir(GPIO_RST_TIMER,DIR_OUT);           //set direction of gpio
+        de_cfbean.gpio_set_dir(GPIO_RST_TIMER,DIR_OUT); //set direction of gpio
 	
 	
 	//--------------------------------------
@@ -251,12 +251,12 @@ void *capture_img_thread(void* arg)
 
 		cap.read(frame);	
 		cv::resize(frame,image,image.size(),0.5,0.5,cv::INTER_AREA);	//resize the image size 
-		count_frame = (count_frame >= 50000)?0:count_frame+1;
+		count_frame = (count_frame >= 50000)?0:count_frame+1;		// the number of captured frame
                 
 		buffer_2threads = _ON_;					// using for synchronizing 2 threads
 		pthread_mutex_unlock(&mtx);
 
-		printf("cap %d \n",count_frame);
+//		printf("cap %d \n",count_frame);
 
 		// Measure timer
 //		end_time = clock();
@@ -334,7 +334,7 @@ void *img_processing_thread(void* arg)
 
 	Uart 		cf_Uart;
 	uint16 		time_test=0;
-  
+	static  uint16 	count_get = 0;  
 	
 	
 	//--------------------------------------
@@ -352,7 +352,7 @@ void *img_processing_thread(void* arg)
     	PATH            path_gr_bgr = "src/img_processing_library/Sample_txt/background_green.txt";
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
-	PATH            path_bl_wr = "src/img_processing_library/Sample_txt/Gray.txt";
+//	PATH            path_bl_wr = "src/img_processing_library/Sample_txt/Gray.txt";
 	
 	if (img_pro_cfbean.read_txtIMG(re_bgr_cv, gr_bgr_cv, bl_bgr_cv, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
 	{
@@ -386,9 +386,6 @@ void *img_processing_thread(void* arg)
 	// 	   PROCESSING ALGORITHM
 	//
 	//--------------------------------------
-	static uint16 cur_row = 0;
-//	static uint16 cur_col = 0;
-
 
 	while (true)
         {
@@ -400,22 +397,8 @@ void *img_processing_thread(void* arg)
 		//
 		//--------------------------------------
                 pthread_mutex_lock(&mtx);	//block 
-	        
-		for (r = cur_row; r< cur_row + ROW; r++)
-		{
-			ptr = image.ptr<cv::Vec3b>(r-cur_row);
-			for (c = 0; c < COL; c++)
-			{
-				global_arr[r][c] = ptr[c][0];
-
-			}
-		}
-
-		cur_row = r;
-
-				
-		
-		/*		for (r=0;r<ROW;r++)
+	        	
+		for (r=0;r<ROW;r++)
 		{
 			ptr = image.ptr<cv::Vec3b>(r);
 			for(c=0;c<COL;c++)
@@ -425,20 +408,15 @@ void *img_processing_thread(void* arg)
 				img_bl.set(r,c) = ptr[c][0];
 			}
 		}
-*/		
+	
 		buffer_2threads = _OFF_;				// buffer was read, please write a new one
 		pthread_mutex_unlock(&mtx);	// unblock
-		}
+//		printf("get: %d\n", count_get++);
 		
-		if (cur_row >= 3590)	
-		{
-			img_pro_cfbean.write_img2txt(global_arr,path_bl_wr);
-			break;
 		}
-		
 
 
-/*
+
 		//--------------------------------------
 		// 	Main algorithm   
 		//
@@ -455,18 +433,23 @@ void *img_processing_thread(void* arg)
 		//--------------Evaluation image
 //		alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 
-
+		if (nb_object != 0)
+			printf("%d \n",nb_object);
 		//-------------- Printf center point
-		for (uint8 i = 0; i < nb_object; i++)
+/*		for (uint8 i = 0; i < nb_object; i++)
 		{
 //			printf("%d \n", order_label[i]);
 			printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
 		}
+*/
 
 		
+		
+		/*		
 		float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC;
 		printf("time = %4f \n",seconds);
-		*/
+*/
+
 		//---------------Using to transfer to Uart
 		/*
 		//de_cfbean.calculate_2kit(center_pxl,time_send,channel_send);
@@ -492,7 +475,6 @@ void child(void)
 {
 
 	pthread_t CAP_THREAD,IMG_PRO_THREAD;		// Using to create 2 threads
-
 
 	//--------------------------------------
 	// 	Creating 2 threads
