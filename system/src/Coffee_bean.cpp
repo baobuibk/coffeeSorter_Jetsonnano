@@ -343,10 +343,16 @@ void *img_processing_thread(void* arg)
 	//
 	//--------------------------------------
 
-
+/*
 	PATH		    path_re =	"src/img_processing_library/Sample_txt/RGB_Red1.txt";
     	PATH		    path_gr =	"src/img_processing_library/Sample_txt/RGB_Green1.txt";
     	PATH		    path_bl =	"src/img_processing_library/Sample_txt/RGB_Blue1.txt";
+*/
+		PATH		    path_re = "src/img_processing_library/Sample_txt/Test_matrix.txt";
+    	PATH		    path_gr = "src/img_processing_library/Sample_txt/Test_matrix.txt";
+    	PATH		    path_bl = "src/img_processing_library/Sample_txt/Test_matrix.txt";
+
+
 
     	//------------------------ Background
     	PATH            path_re_bgr = "src/img_processing_library/Sample_txt/background_red.txt";
@@ -387,37 +393,35 @@ void *img_processing_thread(void* arg)
 	//
 	//--------------------------------------
 
+
 	while (true)
         {
 		if (buffer_2threads == _ON_)				// If buffer was written, read it 
 		{
-			
-		//--------------------------------------
-		// 	Get data from general buffer   
-		//
-		//--------------------------------------
-                pthread_mutex_lock(&mtx);	//block 
+		
+			//--------------------------------------
+			// 	Get data from general buffer   
+			//
+			//--------------------------------------
+                	pthread_mutex_lock(&mtx);	//block 
 	        	
-		for (r=0;r<ROW;r++)
-		{
-			ptr = image.ptr<cv::Vec3b>(r);
-			for(c=0;c<COL;c++)
+			for (r=0;r<ROW;r++)
 			{
-				img_re.set(r,c) = ptr[c][2];
-				img_gr.set(r,c) = ptr[c][1];
-				img_bl.set(r,c) = ptr[c][0];
+				ptr = image.ptr<cv::Vec3b>(r);
+				for(c=0;c<COL;c++)
+				{
+					img_re.set(r,c) = ptr[c][2];
+					img_gr.set(r,c) = ptr[c][1];
+					img_bl.set(r,c) = ptr[c][0];
 
-				img_bl_copy.set(r,c) = ptr[c][0];
+//					img_bl_copy.set(r,c) = ptr[c][0];
+				}
 			}
-		}
 	
-		buffer_2threads = _OFF_;				// buffer was read, please write a new one
-		pthread_mutex_unlock(&mtx);	// unblock
+			buffer_2threads = _OFF_;				// buffer was read, please write a new one
+			pthread_mutex_unlock(&mtx);	// unblock
 //		printf("get: %d\n", count_get++);
 		
-		}
-
-
 
 		//--------------------------------------
 		// 	Main algorithm   
@@ -435,12 +439,16 @@ void *img_processing_thread(void* arg)
 		//--------------Evaluation image
 //		alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 
+		
 		if (nb_object != 0)
 		{
 			printf("%d \n",nb_object);
-			img_pro_cfbean.write_img2txt(img_bl_copy, path_bl_wr);
+//			img_pro_cfbean.write_img2txt(img_bl_copy, path_bl_wr);
 		
+		} 
+
 		}
+		
 		//-------------- Printf center point
 /*		for (uint8 i = 0; i < nb_object; i++)
 		{
@@ -448,8 +456,6 @@ void *img_processing_thread(void* arg)
 			printf("%d  %d\n", center_pxl[i][0], center_pxl[i][1]);
 		}
 */
-
-		
 		
 		/*		
 		float seconds = (float)(end_time - start_time)/CLOCKS_PER_SEC;
@@ -465,8 +471,7 @@ void *img_processing_thread(void* arg)
 
 		}
 		*/
-                
-        }
+	}               
         pthread_exit(0);
 }
 
