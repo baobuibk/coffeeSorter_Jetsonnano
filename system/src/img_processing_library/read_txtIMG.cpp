@@ -235,9 +235,9 @@ uint8 img_pro::read_txtIMG(	Mat& img_re,
 	}
 	else
 	{
-		for (i = 0; i < ROW; i++)
+		for (i = 0; i < ROW_CAM; i++)
 		{
-			for (j = 0; j < COL; j++)
+			for (j = 0; j < COL_CAM; j++)
 			{
 				//--------------------------//
 				fscanf(file1, "%f", &value1);

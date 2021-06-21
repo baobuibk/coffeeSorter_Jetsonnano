@@ -96,7 +96,7 @@ uint8 img_pro::write_img2txt(Matrix& img_re, Matrix& img_gr, Matrix& img_bl, PAT
 //
 //===================================
 
-uint8 img_pro::write_img2txt(Matrix & img_gray, PATH & path_gray)
+uint8 img_pro::write_img2txt(Matrix& img_gray, PATH& path_gray)
 {
 	uint16 r, c;
 	FILE* file_gray;

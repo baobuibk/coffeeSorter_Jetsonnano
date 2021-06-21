@@ -89,7 +89,6 @@ void parent(void)
 	//--------------------------------------
 	// 	DECLARE
 	//--------------------------------------
-
 	struct sigaction sa;
 
 	sem_t *sem_id = sem_open(semName, O_CREAT,0600,0);
@@ -319,6 +318,8 @@ void *img_processing_thread(void* arg)
 	Matrix	    	img_gr;                             // Green channel
  	Matrix	    	img_bl;                             // Blue channel
 
+	Matrix 		img_bl_copy;			    //using for display and debug	
+
 	Matrix          Img_Bi;                             // Be used to store Binary image
  	Matrix          Border_img;                         // Be used to store Border pixels
 
@@ -352,7 +353,7 @@ void *img_processing_thread(void* arg)
     	PATH            path_gr_bgr = "src/img_processing_library/Sample_txt/background_green.txt";
     	PATH            path_bl_bgr = "src/img_processing_library/Sample_txt/background_blue.txt";
 
-//	PATH            path_bl_wr = "src/img_processing_library/Sample_txt/Gray.txt";
+	PATH            path_bl_wr = "src/img_processing_library/Sample_txt/Gray.txt";
 	
 	if (img_pro_cfbean.read_txtIMG(re_bgr_cv, gr_bgr_cv, bl_bgr_cv, path_re_bgr, path_gr_bgr, path_bl_bgr) == _OK_)  
 	{
@@ -370,7 +371,6 @@ void *img_processing_thread(void* arg)
 
 			}
 		}
-
 
 		printf("Reading background successfull\n");
 
@@ -406,6 +406,8 @@ void *img_processing_thread(void* arg)
 				img_re.set(r,c) = ptr[c][2];
 				img_gr.set(r,c) = ptr[c][1];
 				img_bl.set(r,c) = ptr[c][0];
+
+				img_bl_copy.set(r,c) = ptr[c][0];
 			}
 		}
 	
@@ -434,7 +436,11 @@ void *img_processing_thread(void* arg)
 //		alg_cfbean.features_evaluation(img_re, Img_label, nb_object, order_label, result, arr_posi_obj, alg_cfbean);
 
 		if (nb_object != 0)
+		{
 			printf("%d \n",nb_object);
+			img_pro_cfbean.write_img2txt(img_bl_copy, path_bl_wr);
+		
+		}
 		//-------------- Printf center point
 /*		for (uint8 i = 0; i < nb_object; i++)
 		{

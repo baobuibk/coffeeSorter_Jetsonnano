@@ -20,10 +20,11 @@ using cv::Mat;
 using cv::Vec3b;
 
 
+#define ROW_CAM			480			// Height of a global camera
+#define COL_CAM			640			// Width of a global camera 
 
-
-#define ROW			240	//480
-#define COL			320	//640
+#define ROW				240			// Height of a frame in processing 
+#define COL				320			// Width of a frame in processing 
 
 #define _ERROR_			1
 #define _OK_			0
